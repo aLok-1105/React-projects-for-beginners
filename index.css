@@ -6,11 +6,28 @@
   }
 
   /* Aesthetic background */
-  body {
+  /* body {
     background: rgb(249,135,240);
     background: linear-gradient(90deg, rgba(249,135,240,1) 2%, rgba(54,241,236,1) 40%, rgba(245,132,242,1) 83%);
     color: white;
-  }
+  } */
+
+  * {
+		padding: 0;
+		margin: 0;
+	}
+	svg {
+		position: fixed;
+    z-index: -1;
+		top: 0;
+		left: 0;
+    width: 100%;
+    /* height: 100%; */
+		box-sizing: border-box;
+		display: block;
+		background-color: #1b9af6;
+    background-image: linear-gradient(to bottom, rgba(54, 151, 221, 0.86), #0e4166);
+	}
 
   .navbar {
     background-color: rgba(0, 0, 0, 0.7);
