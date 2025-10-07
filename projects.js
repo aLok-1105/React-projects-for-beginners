@@ -595,6 +595,43 @@ const projects = [
     description: "A fun and challenging memory card game built in React to test and improve short-term memory.",
     imgSrc: "assets/puzz.jpeg"
   },
+  {
+  title: "Google Clone",
+  url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/Google-clone",
+  description: "A React clone of Google search interface, implementing search queries and UI elements.",
+  imgSrc: "assets/google.png"
+},
+{
+  title: "Blinkit Clone",
+  url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/Blinkit%20clone",
+  description: "A React implementation of the Blinkit shopping experience clone.",
+  imgSrc: "assets/blinkit.png"
+},
+{
+  title: "The Souled Store",
+  url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/THE-SOULED-STORE",
+  description: "A React clone / replica of The Souled Store e-commerce site.",
+  imgSrc: "assets/souled.png"
+},
+{
+  title: "Tetris Game",
+  url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/Tetris",
+  description: "Classic Tetris game built in React.",
+  imgSrc: "assets/tetris.png"
+},
+{
+  title: "Random Pokémon Generator",
+  url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/random-pokimon-generator",
+  description: "React app that fetches and displays random Pokémon data.",
+  imgSrc: "assets/poke.png"
+},
+{
+  title: "Image Enhancer",
+  url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/image-Enhancer-With-Reactjs",
+  description: "React app for enhancing / editing images (filters, transformations etc.).",
+  imgSrc: "assets/magic.png"
+}
+
   
 
 ];
