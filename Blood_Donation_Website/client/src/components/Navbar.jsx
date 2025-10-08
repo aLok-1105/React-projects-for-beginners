@@ -4,35 +4,32 @@ import React from "react";
 
 const Navbar = () => {
   return (
-    <nav className="bg-black p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <a href="/logo" className="text-lg font-bold text-white">
+    <nav className="navbar">
+      <div className="container-app flex items-center justify-between py-3">
+        <a href="/" className="text-xl font-semibold">
           BloodBank.com
         </a>
 
-        {/* Navigation Links */}
-        <div className="flex space-x-4">
-          <a href="/" className="text-white hover:text-red-500 hover:underline">
+        <div className="hidden md:flex items-center gap-6">
+          <a href="/" className="hover:underline">
             Home
           </a>
-          <a
-            href="/donate"
-            className="text-white hover:text-red-500 hover:underline"
-          >
+          <a href="/#camps" className="hover:underline">
+            Camps
+          </a>
+          <a href="/donate" className="hover:underline">
             Donor
           </a>
-          <a
-            href="/aboutus"
-            className="text-white hover:text-red-500 hover:underline"
-          >
+          <a href="/aboutus" className="hover:underline">
             About us
           </a>
-           <a
-            href="/article"
-            className="text-white hover:text-red-500 hover:underline"
-          >
-            Articles 
+          <a href="/article" className="hover:underline">
+            Articles
           </a>
+        </div>
+
+        <div className="md:hidden">
+          <button className="btn btn-ghost" aria-label="Open menu">Menu</button>
         </div>
       </div>
     </nav>
