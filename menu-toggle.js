@@ -20,3 +20,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+
+
+
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.querySelector('.hamburger');
+  const closeBtn = document.querySelector('.close-btn');
+
+  // Open sidebar
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.add('active');
+  });
+
+  // Close sidebar
+  closeBtn.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+  });
+
+  // Optional: Close sidebar when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+      sidebar.classList.remove('active');
+    }
+  });
+
