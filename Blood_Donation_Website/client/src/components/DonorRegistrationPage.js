@@ -27,9 +27,14 @@ const DonorRegistrationPage = () => {
   };
 
   return (
-    <div>
-      <h1>Donor Registration</h1>
-      <DonorForm onSubmit={handleDonorRegistration} />
+    <div className="section">
+      <div className="container-app">
+        <div className="text-center max-w-2xl mx-auto mb-6">
+          <h1>Donor Registration</h1>
+          <p className="muted mt-1">Join our community of life-savers. Register below to become a donor.</p>
+        </div>
+        <DonorForm onSubmit={handleDonorRegistration} />
+      </div>
     </div>
   );
 };
