@@ -536,7 +536,7 @@ const projects = [
     title: "Simple-auth-kit",
     url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/simple-auth-kit",
     description: "A simple and reusable Node.js authentication package using **MongoDB**, **JWT**, and **bcrypt**. Just plug it into your frontend project and go!",
-    imgSrc: "assets/Simple-auth-kit.png"
+    imgSrc: "assets/auth.png"
 
   },
 
@@ -630,7 +630,32 @@ const projects = [
   url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/image-Enhancer-With-Reactjs",
   description: "React app for enhancing / editing images (filters, transformations etc.).",
   imgSrc: "assets/magic.png"
-}
+},
+{
+  title: "Netflix Clone",
+  url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/netflix-clone",
+  description: "A React clone of Netflix’s UI to browse movie lists and view details.",
+  imgSrc: "assets/netflix.png"
+},
+{
+  title: "Mood Music",
+  url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/Mood-based-songs",
+  description: "React app that suggests songs based on user’s current mood.",
+  imgSrc: "assets/moodmusic.png"
+},
+{
+  title: "Hotstar Clone",
+  url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/Disney-Plus-Hotstar-Clone",
+  description: "A React clone of Disney+ / Hotstar streaming interface and features.",
+  imgSrc: "assets/hotstar.png"
+},
+{
+  title: "Zomato Clone",
+  url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/zomato-clone",
+  description: "A React clone of Zomato’s restaurant listing and search features.",
+  imgSrc: "assets/zomato.jpeg"
+},
+
 
   
 
