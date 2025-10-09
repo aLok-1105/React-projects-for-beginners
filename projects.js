@@ -644,13 +644,13 @@ function renderProjects(list) {
   container.innerHTML = ''; // clear existing
   list.forEach(project => {
     const projectDiv = document.createElement('div');
-    projectDiv.className = 'col-md-2 mb-4 d-md-inline-block';
+    projectDiv.className = 'col-md-3 mb-4 d-md-inline-block';
     projectDiv.innerHTML = `
       <div class="custom-card text-center" data-bs-toggle="tooltip" data-bs-placement="top" title="${project.description}">
-        <div class="card-body">
+        <div class="card-body  h-52 flex flex-col  items-center justify-center  md:ml-5 gap-5">
           <a href="${project.url}" target="_blank">
-            <img src="${project.imgSrc}" class="card-img-top rounded-circle mx-auto d-block" alt="React App" style="width: 85px; height:85px">
-            <h5 class="card-title">${project.title}</h5>
+            <img src="${project.imgSrc}" class="card-img-top w-20 h-20 rounded-circle mx-auto d-block" alt="React App" style="width: 85px; height:85px">
+            <h5 class="card-title text-center mt-6">${project.title}</h5>
           </a>
         </div>
       </div>
