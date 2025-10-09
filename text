@@ -1,0 +1,87 @@
+
+  // sm (640px ya usse above): Small devices, such as phones in portrait mode. (hamburger)
+  
+  // md (768px): Tablets and small devices in landscape mode.  (hamburger)
+  // lg (1024px): Laptops and medium-sized devices. 
+  // xl (1280px): Desktops and larger screens. 
+  // 2xl (1536px): Extra-large desktop screens or wide monitors. 
+
+  // And if no prefix then they are  for mobile  (hamburger)
+
+
+
+
+
+
+  <nav class="floating-navbar 2xl:w-full 2xl:ml-0 ml-20 xl:w-5/6">
+
+    <div class="navbar-container">
+      <div class="navbar-left">
+        <img class="w-12" src="./assets/logo.png" alt="react-icon" />
+        <span class="">React Projects</span>
+      <img class="-ml-36 2xl:ml-0" src="./heroicon-animation.dd8cd700.gif" alt="hacktoberfest">
+
+      </div>
+      
+
+      <!-- Center Section: Navigation Links -->
+
+      <div class="navbar-center 2xl:ml-0">
+        <ul class="navbar-menu">
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contributors">Contributors</a></li>
+          <li><a href="https://github.com/ianshulx/React-projects-for-beginners" target="_blank">GitHub</a></li>
+        </ul>
+      </div>
+      
+
+      <!-- Right Section: Hamburger Menu -->
+      <div class="navbar-right">
+      </div>
+    </div>
+    <div class="button-container-below-navbar">
+      <div id="menu-label" class="menu-label" tabindex="0" role="button" aria-expanded="false"
+        aria-controls="menu-buttons">Menu</div>
+      <div id="menu-buttons" class="inner-buttons hidden">
+        <button class="inner-btn star-btn"
+          onclick="window.open('https://github.com/ianshulx/React-projects-for-beginners/stargazers', '_blank')">
+          <i class="bi bi-star-fill"></i> Star
+        </button>
+        <button class="inner-btn fork-btn"
+          onclick="window.open('https://github.com/ianshulx/React-projects-for-beginners/network/members', '_blank')">
+          <i class="bi bi-code-branch"></i> Fork
+        </button>
+        <button class="inner-btn issues-btn"
+          onclick="window.open('https://github.com/ianshulx/React-projects-for-beginners/issues', '_blank')">
+          <i class="bi bi-exclamation-circle-fill"></i> Issues
+        </button>
+        <button class="inner-btn pr-btn"
+          onclick="window.open('https://github.com/ianshulx/React-projects-for-beginners/pulls', '_blank')">
+          <i class="bi bi-git-pull-request"></i> Pull Requests
+        </button>
+        <button class="inner-btn watchers-btn"
+          onclick="window.open('https://github.com/ianshulx/React-projects-for-beginners/watchers', '_blank')">
+          <i class="bi bi-eye"></i> Watchers
+        </button>
+        <button class="inner-btn contributors-btn"
+          onclick="window.open('https://github.com/ianshulx/React-projects-for-beginners/graphs/contributors', '_blank')">
+          <i class="bi bi-people-fill"></i> Contributors
+        </button>
+        <button class="inner-btn download-btn"
+          onclick="window.open('https://github.com/ianshulx/React-projects-for-beginners/releases', '_blank')">
+          <i class="bi bi-download"></i> Download
+        </button>
+        <button class="inner-btn maintainer-btn" onclick="window.open('https://github.com/ianshulx', '_blank')">
+          <i class="bi bi-person-badge-fill"></i> Maintainer
+        </button>
+      </div>
+    </div>
+  </nav>
+
+
+
+
+
+
+  
