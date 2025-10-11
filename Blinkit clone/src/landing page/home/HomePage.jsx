@@ -9,10 +9,12 @@ import ColdDrinks from "./ColdDrinks.jsx"
 import Candies from "./Candies.jsx"
 import Hookah from "./Hookah.jsx"
 
+
 export default function Home() {
+    
     return (
         <>
-            <Navbar />
+           
             <Hero/>
             <Categories/>
             <RollingPapers/>
@@ -21,7 +23,7 @@ export default function Home() {
             <Candies/>
             <ColdDrinks/>
             <Hookah/>
-            <Footer />
+         
         </>
     )
 }

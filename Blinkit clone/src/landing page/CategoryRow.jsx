@@ -16,6 +16,7 @@ export default function CategoryRow({ category, items }) {
                         title={item.title}
                         desc={item.desc}
                         price={item.price}
+                        id = {item.id}
                     />
                 ))}
             </div>
