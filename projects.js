@@ -744,6 +744,14 @@ const projects = [
       "A React clone of Zomato’s restaurant listing and search features.",
     imgSrc: "assets/zomato.jpeg",
   },
+  {
+    title: "JobBroad",
+    url: "https://github.com/kuNA78-hub/React-projects-for-beginners/tree/main/JobBoard/hierd",
+    description:
+      "A full-featured job portal built with React and Supabase, featuring job search, filters, user authentication, and responsive design.",
+    imgSrc: "assets/logowhite.png",
+  }
+
 ];
 
 
