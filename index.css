@@ -1,4 +1,6 @@
 @import "tailwindcss";
+
+
 .custom-box {
   background-color: #f0f0f0;
   padding: 20px;
@@ -9,19 +11,31 @@
 * {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
 }
+
+/* section, div {
+  max-width: 100%;
+} */
+
 
 body {
   font-family: 'Space Grotesk', 'Poppins', sans-serif;
   padding-top: 120px;
   background-size: 150px 150px;
+  overflow-x: hidden;
+ font-family: "Atkinson Hyperlegible", sans-serif;
+  font-style: normal;
 }
+
+
+
 
 svg {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 80%;
   box-sizing: border-box;
   display: block;
   background-color: #0e4166;
@@ -73,7 +87,7 @@ nav {
   margin-bottom: 20px;
   font-weight: 700;
   color: #56ddcd;
-  font-family: 'Space Grotesk', sans-serif;
+   font-family: "Atkinson Hyperlegible Mono", sans-serif;
 }
 
 .hero-text::first-line {
@@ -360,6 +374,7 @@ nav {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+      font-family: "Atkinson Hyperlegible Mono";
 }
 
 .menu-button-enhanced::before {
@@ -468,22 +483,27 @@ nav {
 }
 
 .intro-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-family: "Atkinson Hyperlegible Mono", sans-serif;
+  font-size: clamp(1.7rem, 5vw, 3.4rem);
   font-weight: 700;
   color: #fff;
   margin-bottom: 30px;
   line-height: 1.2;
   letter-spacing: -1px;
+
+  /* ✨ Add this for soft white glow */
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.6),
+               0 0 20px rgba(255, 255, 255, 0.4);
 }
 
-.highlight-text {
-  background: linear-gradient(135deg, #56ddcd, #61dafb);
+
+/* .highlight-text {
+  background: linear-gradient(135deg, #00c8ff, #00c8ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   position: relative;
-}
+} */
 
 .intro-description {
   font-size: clamp(1rem, 2vw, 1.25rem);
@@ -544,7 +564,7 @@ nav {
 }
 
 .feature-card h3 {
-  font-family: 'Space Grotesk', sans-serif;
+   font-family: "Atkinson Hyperlegible Mono", sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   color: #fff;
@@ -577,7 +597,7 @@ nav {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  font-family: 'Space Grotesk', sans-serif;
+   font-family: "Atkinson Hyperlegible Mono", sans-serif;
 }
 
 .cta-primary {
@@ -673,7 +693,7 @@ nav {
   color: #fff;
   outline: none;
   transition: all 0.3s ease;
-  font-family: 'Space Grotesk', sans-serif;
+   font-family: "Atkinson Hyperlegible Mono", sans-serif;
 }
 
 .search-input-enhanced::placeholder {
@@ -698,7 +718,7 @@ nav {
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
-  font-family: 'Space Grotesk', sans-serif;
+   font-family: "Atkinson Hyperlegible Mono", sans-serif;
 }
 
 .clear-button-enhanced:hover {
@@ -714,7 +734,7 @@ nav {
 
 /* Section Title */
 .section-title {
-  font-family: 'Space Grotesk', sans-serif;
+   font-family: "Atkinson Hyperlegible Mono", sans-serif;
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
   color: #fff;
@@ -783,6 +803,8 @@ nav {
     justify-content: space-between;
     align-items: center !important;
     gap: 3rem;
+    font-family: 'Inter', sans-serif;
+    font-size: smaller;
 }
 
 /* Sidebar container */
@@ -899,6 +921,9 @@ nav {
 
 .navbar-menu {
   list-style: none;
+   a {
+  font-size: 0.9rem;
+}
 }
 
 .navbar-menu li a {
@@ -1157,3 +1182,12 @@ nav {
   filter: brightness(1.1);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
+
+[data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+
+
+
