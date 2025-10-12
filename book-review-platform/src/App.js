@@ -1,9 +1,13 @@
-import './App.css';
+import React from "react";
+import "./App.css";
+import Sidebar from "./components/Sidebar";
+import MainContent from "./components/MainContent";
 
 function App() {
   return (
     <div className="App">
-      <h1>Book Review Platform</h1>
+      <Sidebar />
+      <MainContent />
     </div>
   );
 }
