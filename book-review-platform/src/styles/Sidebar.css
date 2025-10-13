@@ -4,19 +4,17 @@
   top: 0;
   width: 280px;
   height: 100vh;
-  background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
-  color: white;
+  background: #7ba89a;
+  color: #fdfffe;
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   overflow: hidden;
 }
 
 .sidebar-header {
   padding: 1.5rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #95B9AE ;
 }
 
 .logo-container {
@@ -28,7 +26,8 @@
 .logo-icon {
   width: 2.5rem;
   height: 2.5rem;
-  background: #3498db;
+  color:#7ba89a ;
+  background: #fdfffe;
   border-radius: 0.5rem;
   display: flex;
   align-items: center;
@@ -38,7 +37,7 @@
 .book-icon {
   width: 1.5rem;
   height: 1.5rem;
-  color: white;
+  color: #7ba89a;
 }
 
 .logo-text {
@@ -74,7 +73,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  color: #bdc3c7;
+  color: #fdfffe;
   background: transparent;
   border: none;
   border-radius: 0.5rem;
@@ -86,13 +85,13 @@
 }
 
 .nav-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ecf0f1;
+  background: #6B9686;
+  color: #fdfffe;
 }
 
 .nav-link.active {
-  background: #3498db;
-  color: white;
+  background: #fdfffe;
+  color: #7ba89a;
 }
 
 .nav-icon {
@@ -113,19 +112,18 @@
   gap: 0.75rem;
   padding: 0.75rem;
   border-radius: 0.5rem;
-  transition: background 0.3s ease;
   cursor: pointer;
 }
 
 .user-profile:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
+  background: #6B9686;
+  color: #fdfffe;}
 
 .avatar {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  background: #3498db;
+  background: #fdfffe;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,7 +133,7 @@
 .avatar-icon {
   width: 1.25rem;
   height: 1.25rem;
-  color: white;
+  color: #6B9686;
 }
 
 .user-info {
