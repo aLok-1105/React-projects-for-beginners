@@ -17,7 +17,7 @@ const Product = ({post}) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-between hover:scale-110 transition shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]
+    <div className="flex bg-white flex-col items-center justify-between hover:scale-110 transition shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]
     duration-300 ease-in hover:shadow-[rgba(0,_0,_0,_0.4)_0px_30px_90px] gap-3 p-4 mt-10 ml-5 rounded-xl group h-[380px]">
       <div>
         <p className="text-gray-700 font-semibold text-lg text-left truncate w-40 mt-1">{post.title}</p>
