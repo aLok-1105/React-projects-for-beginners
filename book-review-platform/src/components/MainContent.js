@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/MainContent.css";
+import { SearchBar } from "./SearchBar";
 
 const MainContent = () => {
   // Sample book reviews data
@@ -91,6 +92,8 @@ const MainContent = () => {
 
   return (
     <div className="main-content">
+      <SearchBar />
+
       <header className="content-header">
         <h1>Latest Book Reviews</h1>
         <p>Discover what others are reading and share your thoughts</p>
