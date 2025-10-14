@@ -1,11 +1,22 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { GlobalContext } from "../../context";
 
+const options = ["pizza", "pasta", "burger", "salad", "cake", "soup", "sushi", "sandwich"];
+
 export default function Navbar() {
+  const [dropdown, setDropDown] = useState(false)
+  const [isTyping, setIsTyping] = useState(false);
   const { searchParam, setSearchParam , handleSubmit, toggleTheme, theme } = useContext(GlobalContext);
 
-  console.log(searchParam);
+  console.log(searchParam)
+  useEffect(() => {
+    if (isTyping && searchParam.length > 0) {
+      setDropDown(true);
+    } else {
+      setDropDown(false);
+    }
+  }, [searchParam, isTyping]);
 
   return (
     <nav className="flex justify-between items-center py-8 container mx-auto flex-col lg:flex-row gap-5 lg:gap-0">
@@ -15,16 +26,46 @@ export default function Navbar() {
           <span className="text-black dark:text-white hover:opacity-90" style={{ color: "#FF6347" }}>Food Recipes</span>
         </NavLink>
       </h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="relative">
         <input
           type="text"
           name="search"
           value={searchParam}
-          onChange={(event) => setSearchParam(event.target.value)}
+          onChange={(event) => {
+            setSearchParam(event.target.value);
+            setIsTyping(true); // user is typing
+          }}
           placeholder="Enter Items..."
           className="bg-white/75 dark:bg-white/10 dark:text-white p-3 px-8 rounded-full outline-none lg:w-96 shadow-lg shadow-red-100 focus:shadow-red-200 focus:ring-2 focus:ring-red-300"
         />
+
+        {dropdown && (
+          <div className="absolute top-full left-0 mt-2 w-96 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50">
+            <ul className="max-h-60 overflow-y-auto">
+              {options
+                .filter((item) =>
+                  item.toLowerCase().includes(searchParam.toLowerCase())
+                )
+                .map((ele, index) => (
+                  <li
+                    key={index}
+                    className="px-4 py-2 cursor-pointer hover:bg-red-100 dark:hover:bg-gray-700 rounded-md"
+                    onClick={() => {
+                      setSearchParam(ele);
+                      setDropDown(false);
+                      setIsTyping(false); // stop showing dropdown
+                      handleSubmit(null, ele);
+                    }}
+                  >
+                    {ele}
+                  </li>
+                ))}
+            </ul>
+          </div>
+        )}
+
       </form>
+
       <ul className="flex gap-5 items-center">
         <li>
           <NavLink
