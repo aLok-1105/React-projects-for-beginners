@@ -591,3 +591,33 @@
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 }
+
+/* Loading and Error States */
+.loading-message {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.loading-message p {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #f5c6cb;
+}
+
+.error-message p {
+  margin: 0.25rem 0;
+}
+
+.error-message p:first-child {
+  font-weight: 600;
+}
