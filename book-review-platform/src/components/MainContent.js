@@ -88,8 +88,8 @@ const MainContent = () => {
       <SearchBar />
 
       <header className="content-header">
-        <h1>Latest Book Reviews</h1>
-        <p>Discover what others are reading and share your thoughts</p>
+        <h1>Discover Your Next Favorite Book</h1>
+        <p>See what others are reading and share your thoughts</p>
       </header>
 
       <div className="reviews-container">

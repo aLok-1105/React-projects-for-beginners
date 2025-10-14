@@ -1,13 +1,13 @@
 import React from "react";
 import "../styles/Sidebar.css";
-import { Home, Heart, TrendingUp, BookOpen, User, Settings } from "lucide-react";
+import { Home, Bookmark, TrendingUp, BookOpen, User, Settings } from "lucide-react";
 
 const Sidebar = () => {
   const navItems = [
     { icon: Home, label: "Home", active: true },
     { icon: TrendingUp, label: "All Reviews" },
     { icon: BookOpen, label: "Books" },
-    { icon: Heart, label: "Favorites" },
+    { icon: Bookmark, label: "Saved" },
     { icon: User, label: "My Reviews" },
     { icon: Settings, label: "Settings" },
   ];

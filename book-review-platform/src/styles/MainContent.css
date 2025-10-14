@@ -7,26 +7,50 @@
 
 /* SearchBar Styles */
 .search-bar {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 10;
-  background: rgba(248, 249, 250, 0.95);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid #e9ecef;
-  padding: 1.5rem;
+  left: 280px; /* align with main content after sidebar */
+  right: 0;
+  z-index: 1000;
+  background: rgba(248, 249, 250, 0.95); /* bg-background/95 */
+  border-bottom: 1px solid #e9ecef; /* border-border */
+  padding: 1.5rem; /* p-6 */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* When scrolled, apply backdrop blur and slightly more transparent background */
+.search-bar.is-scrolled {
+  background: rgba(
+    248,
+    249,
+    250,
+    0.6
+  ); /* supports-[backdrop-filter]:bg-background/60 */
+  backdrop-filter: blur(8px); /* backdrop-blur */
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Fallback when backdrop-filter isn't supported */
+@supports not (backdrop-filter: blur(1px)) {
+  .search-bar.is-scrolled {
+    background: rgba(248, 249, 250, 0.95);
+  }
 }
 
 .search-container {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0; /* span entire content area */
+  margin-bottom: 4px;
 }
 
 .search-input-container {
   position: relative;
-  flex: 1;
+  flex: 1 1 auto;
+  width: 100%;
 }
 
 .search-icon {
@@ -41,263 +65,19 @@
 }
 
 .search-input {
-  padding-left: 2.5rem !important;
-  height: 3rem;
-  background: white;
-  border: 1px solid #e9ecef;
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem; /* space for icon */
+  border: 1px solid #ced4da;
+  border-radius: 9999px; /* pill */
   font-size: 1rem;
-}
-
-.search-input:focus {
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-}
-
-.filter-button {
-  height: 3rem;
-  padding: 0 1rem;
-  gap: 0.5rem;
-  background: white;
-  border: 1px solid #e9ecef;
   color: #495057;
-}
-
-.filter-button:hover {
-  background: #f8f9fa;
-  border-color: #adb5bd;
-}
-
-.filter-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-.filter-dropdown {
-  width: 14rem;
-  background: white;
-  border: 1px solid #e9ecef;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* UI Component Base Styles */
-input,
-button {
-  font-family: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-button:disabled {
-  cursor: not-allowed;
-}
-
-/* Input Component Styles */
-input {
-  border-radius: 0.375rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-input::placeholder {
-  color: #9ca3af;
-}
-
-input:focus {
-  outline: none;
-}
-
-/* Button Component Styles */
-button {
-  border-radius: 0.375rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  border: none;
-}
-
-/* Dropdown Menu Styles */
-.relative {
-  position: relative;
-}
-
-.absolute {
-  position: absolute;
-}
-
-.z-50 {
-  z-index: 50;
-}
-
-.min-w-32 {
-  min-width: 8rem;
-}
-
-.overflow-hidden {
-  overflow: hidden;
-}
-
-.rounded-md {
-  border-radius: 0.375rem;
-}
-
-.border {
-  border: 1px solid #e5e7eb;
-}
-
-.bg-popover {
-  background-color: white;
-}
-
-.p-1 {
-  padding: 0.25rem;
-}
-
-.text-popover-foreground {
-  color: #374151;
-}
-
-.shadow-md {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.animate-in {
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.fade-in-0 {
-  animation: fadeIn 0.2s ease-out;
-}
-
-.zoom-in-95 {
-  animation: zoomIn 0.2s ease-out;
-}
-
-@keyframes zoomIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.top-full {
-  top: 100%;
-}
-
-.mt-2 {
-  margin-top: 0.5rem;
-}
-
-.right-0 {
-  right: 0;
-}
-
-.left-0 {
-  left: 0;
-}
-
-/* Dropdown Menu Item Styles */
-.px-2 {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
-
-.py-1-5 {
-  padding-top: 0.375rem;
-  padding-bottom: 0.375rem;
-}
-
-.text-sm {
-  font-size: 0.875rem;
-}
-
-.font-semibold {
-  font-weight: 600;
-}
-
-.-mx-1 {
-  margin-left: -0.25rem;
-  margin-right: -0.25rem;
-}
-
-.my-1 {
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
-}
-
-.h-px {
-  height: 1px;
-}
-
-.bg-muted {
-  background-color: #f3f4f6;
-}
-
-.flex {
-  display: flex;
-}
-
-.cursor-default {
-  cursor: default;
-}
-
-.select-none {
-  user-select: none;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.rounded-sm {
-  border-radius: 0.125rem;
-}
-
-.outline-none {
-  outline: none;
-}
-
-.transition-colors {
-  transition: color 0.2s ease, background-color 0.2s ease;
-}
-
-.hover\:bg-accent:hover {
-  background-color: #f3f4f6;
-}
-
-.hover\:text-accent-foreground:hover {
-  color: #111827;
-}
-
-.absolute {
-  position: absolute;
-}
-
-.left-2 {
-  left: 0.5rem;
-}
-
-.h-3-5 {
-  height: 0.875rem;
-}
-
-.w-3-5 {
-  width: 0.875rem;
+/* Removed conflicting fixed-position search bar block */
+.search-input:focus {
+  border-color: #7ba89a;
+  box-shadow: 0 0 0 3px rgba(123, 168, 154, 0.25);
 }
 
 .justify-center {
@@ -552,20 +332,16 @@ button {
 }
 
 .content-header {
-  background: white;
   padding: 2rem;
-  border-bottom: 1px solid #e9ecef;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
-  top: 0;
-  z-index: 100;
+  top: 80px; /* stick below fixed search bar */
+  margin-bottom: 40px;
 }
 
 .content-header h1 {
   margin: 0 0 0.5rem 0;
-  color: #2c3e50;
-  font-size: 2rem;
-  font-weight: 700;
+  color: #1a3a2e;
+  font-weight: 500;
 }
 
 .content-header p {
@@ -576,7 +352,9 @@ button {
 
 .reviews-container {
   padding: 2rem;
-  max-width: 800px;
+  width: 100%;
+  max-width: 1100px; /* widen to reduce right-side empty space */
+  margin: 0 auto; /* center within main content */
 }
 
 .review-card {
