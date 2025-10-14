@@ -46,3 +46,69 @@
 .weather .getweather:focus {
   outline: none;
 }
+
+
+.theme-toggle {
+  margin-left: auto;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.04);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.theme-toggle:hover {
+  background: rgba(0,0,0,0.08);
+}
+
+/* When `.weather` has .dark class, invert styles for dark mode */
+.weather.dark {
+  background: #0f1724; /* dark blue-ish */
+  color: #e6eef8;
+  border-color: rgba(255,255,255,0.12);
+}
+
+.weather.dark .getweather {
+  border-color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: #e6eef8;
+}
+
+.weather.dark .getweather:hover {
+  background: transparent;
+  color: #e6eef8;
+}
+
+.weather.dark form input {
+  border-bottom: 2px dashed rgba(255,255,255,0.12);
+  color: inherit;
+}
+
+/* theme toggle dark styles */
+.weather.dark .theme-toggle {
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.02);
+  color: #e6eef8;
+}
+.weather.dark .theme-toggle:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+/* small responsive tweak if width gets small */
+@media (max-width: 520px) {
+  .weather {
+    width: 100%;
+    padding: 16px;
+  }
+  .weather .title {
+    font-size: 2.4rem;
+  }
+  .theme-toggle {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+  }
+}
