@@ -136,7 +136,7 @@ Can’t hold the code author(s) legally liable for any reason.
 Can’t delete the copyright notice and original license from your version of the code.
 
 Let's start contributing and make the open-source community a better place for everyone!
-<h1>React Project for Beginners Repository</h1>
+<!-- <h1>React Project for Beginners Repository</h1>
 
 Welcome to the React Project for Beginners Repository! This is a special place for beginners who are passionate about learning and contributing to open-source projects using ReactJS.
 It's Hacktoberfest currently!
@@ -409,4 +409,4 @@ Dont's:
 Can’t hold the code author(s) legally liable for any reason.
 Can’t delete the copyright notice and original license from your version of the code.
 
-Let's start contributing and make the open-source community a better place for everyone!
+Let's start contributing and make the open-source community a better place for everyone! -->

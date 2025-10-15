@@ -83,3 +83,40 @@ td {
 .displayweather .weatherdetails span {
   font-size: 1.2rem;
 }
+
+
+.weather.dark .displayweather .maincard {
+  background: #07121c;
+  color: #e6eef8;
+  box-shadow: none;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.weather.dark .displayweather .cardsubtitle {
+  color: rgba(230,238,248,0.75);
+}
+
+.weather.dark .weather-description {
+  color: rgba(230,238,248,0.85);
+}
+
+.weather.dark .weatherdetails td {
+  color: rgba(230,238,248,0.9);
+}
+
+/* ensure images (icons) remain visible in dark mode (they're pngs so fine) */
+.weather.dark .weather-icon {
+  filter: none;
+}
+
+/* small screens adjustments */
+@media (max-width: 520px) {
+  .weatherdetails {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .weather-icon {
+    width: 56px;
+    height: 56px;
+  }
+}
