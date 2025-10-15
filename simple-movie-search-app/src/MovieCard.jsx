@@ -1,11 +1,26 @@
 import React, { useState } from "react";
 
+
+const MovieCard = ({ movie: { imdbID, Year, Poster, Title, Type }, onClick }) => {
+  return (
+    <div className="movie cursor-pointer" onClick={onClick}>
+      <div>
+        <p>{Year}</p>
+      </div>
+
+      <div>
+        <img
+          src={Poster !== "N/A" ? Poster : "https://via.placeholder.com/400"}
+          alt={Title}
+        />
+      </div>
 const MovieCard = ({ movie: { imdbID, Year, Poster, Title, Type } }) => {
   const [modal, setModal] = useState(false);
 
   const openModal = () => {
     setModal(!modal);
   };
+
 
   return (
     <>
