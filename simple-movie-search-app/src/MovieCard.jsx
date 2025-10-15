@@ -2,7 +2,7 @@ import React from 'react';
 
 const MovieCard = ({ movie: { imdbID, Year, Poster, Title, Type }, onClick }) => {
   return (
-    <div className="movie" onClick={onClick}>
+    <div className="movie cursor-pointer" onClick={onClick}>
       <div>
         <p>{Year}</p>
       </div>

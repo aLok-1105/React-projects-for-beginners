@@ -67,7 +67,7 @@ const App = () => {
       </div>
 
       {movies?.length > 0 ? (
-        <div className="container">
+        <div className="container cursor-pointer">
           {movies.map((movie) => (
             <MovieCard
               key={movie.imdbID}
