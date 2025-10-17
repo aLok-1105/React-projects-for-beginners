@@ -3,12 +3,12 @@ import { logo } from "../assets";
 import { footerLinks, socialMedia } from "../constants";
 
 const Footer = () => (
-  <section className={`${styles.flexCenter} ${styles.paddingY} flex-col`}>
+  <footer className={`${styles.flexCenter} ${styles.paddingY} flex-col`}>
     <div className={`${styles.flexStart} md:flex-row flex-col mb-8 w-full`}>
       <div className="flex-[1] flex flex-col justify-start mr-10">
         <img
           src={logo}
-          alt="hoobank"
+          alt="HooBank logo"
           className="w-[266px] h-[72.14px] object-contain"
         />
         <p className={`${styles.paragraph} mt-4 max-w-[312px]`}>
@@ -16,27 +16,48 @@ const Footer = () => (
         </p>
       </div>
 
-      <div className="flex-[1.5] w-full flex flex-row justify-between flex-wrap md:mt-0 mt-10">
-        {footerLinks.map((footerlink) => (
-          <div key={footerlink.title} className={`flex flex-col ss:my-0 my-4 min-w-[150px]`}>
-            <h4 className="font-poppins font-medium text-[18px] leading-[27px] text-white">
+      <nav
+        aria-labelledby="footer-navigation"
+        className="flex-[1.5] w-full flex flex-row justify-between flex-wrap md:mt-0 mt-10"
+      >
+        <h2 id="footer-navigation" className="sr-only">
+          Footer navigation
+        </h2>
+
+        {footerLinks.map((footerlink, colIndex) => (
+          <section
+            key={footerlink.title}
+            aria-labelledby={`footer-heading-${colIndex}`}
+            className="flex flex-col ss:my-0 my-4 min-w-[150px]"
+          >
+            <h3
+              id={`footer-heading-${colIndex}`}
+              className="font-poppins font-medium text-[18px] leading-[27px] text-white"
+            >
               {footerlink.title}
-            </h4>
+            </h3>
+
             <ul className="list-none mt-4">
               {footerlink.links.map((link, index) => (
                 <li
                   key={link.name}
-                  className={`font-poppins font-normal text-[16px] leading-[24px] text-dimWhite hover:text-secondary cursor-pointer ${
-                    index !== footerlink.links.length - 1 ? "mb-4" : "mb-0"
-                  }`}
+                  className={`${index !== footerlink.links.length - 1 ? "mb-4" : "mb-0"}`}
                 >
-                  {link.name}
+                  <a
+                    href={link.link || "#"}
+                    className="font-poppins font-normal text-[16px] leading-[24px] text-dimWhite hover:text-secondary"
+                    target={link.link ? "_blank" : "_self"}
+                    rel={link.link ? "noopener noreferrer" : undefined}
+                    aria-label={`Link to ${link.name}`}
+                  >
+                    {link.name}
+                  </a>
                 </li>
               ))}
             </ul>
-          </div>
+          </section>
         ))}
-      </div>
+      </nav>
     </div>
 
     <div className="w-full flex justify-between items-center md:flex-row flex-col pt-6 border-t-[1px] border-t-[#3F3E45]">
@@ -44,21 +65,26 @@ const Footer = () => (
         Copyright Ⓒ {new Date().getFullYear()} HooBank. All Rights Reserved.
       </p>
 
-      <div className="flex flex-row md:mt-0 mt-6">
+      <ul className="flex flex-row md:mt-0 mt-6" aria-label="Social media links">
         {socialMedia.map((social, index) => (
-          <img
-            key={social.id}
-            src={social.icon}
-            alt={social.id}
-            className={`w-[21px] h-[21px] object-contain cursor-pointer ${
-              index !== socialMedia.length - 1 ? "mr-6" : "mr-0"
-            }`}
-            onClick={() => window.open(social.link)}
-          />
+          <li key={social.id} className={`${index !== socialMedia.length - 1 ? "mr-6" : "mr-0"}`}>
+            <a
+              href={social.link || "#"}
+              target={social.link ? "_blank" : "_self"}
+              rel={social.link ? "noopener noreferrer" : undefined}
+              aria-label={`Link to ${social.id} profile`}
+            >
+              <img
+                src={social.icon}
+                alt={`${social.id} icon`}
+                className="w-[21px] h-[21px] object-contain cursor-pointer"
+              />
+            </a>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
-  </section>
+  </footer>
 );
 
 export default Footer;
