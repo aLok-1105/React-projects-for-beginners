@@ -62,7 +62,7 @@ export const EntryEditor = ({ entry, onClose }: EntryEditorProps) => {
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 animate-fade-in">
       <div className="bg-card rounded-xl shadow-elevated max-w-3xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-auto animate-scale-in">
         <div className="sticky top-0 bg-card border-b border-border p-4 sm:p-6 flex items-center justify-between">
-          <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+          <h2 className="text-xl sm:text-2xl font-bold text-primary">
             {entry ? 'Edit Entry' : 'New Entry'}
           </h2>
           <Button
