@@ -5,7 +5,6 @@ import { featuredBooks, trendingBooks } from '../data/mockBooks';
 const HomePage = () => {
   return (
     <div>
-      {/* Hero Section */}
       <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-16">
         <PageContainer>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -18,7 +17,6 @@ const HomePage = () => {
       </div>
 
       <PageContainer>
-        {/* Featured Books */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Featured Books</h2>
           <BookGrid books={featuredBooks} />
