@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Dashboard from './components/Dashboard';
 import MetricInput from './components/MetricInput';
 import GoalSetting from './components/GoalSetting';
+import ThemeToggle from './components/ThemeToggle';
+import { ThemeProvider } from './contexts/ThemeContext';
 import './App.css';
 
 function App() {
@@ -85,37 +87,44 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <div className="container">
-        <div className="header">
-          <h1>🏥 Health Monitor</h1>
-          <p>Track your daily health metrics and achieve your wellness goals</p>
+    <ThemeProvider>
+      <div className="App">
+        <div className="container">
+          <div className="header">
+            <div className="header-content">
+              <div className="header-text">
+                <h1>🏥 Health Monitor</h1>
+                <p>Track your daily health metrics and achieve your wellness goals</p>
+              </div>
+              <ThemeToggle />
+            </div>
+          </div>
+
+          <nav className="nav-tabs">
+            <button 
+              className={`nav-button ${activeTab === 'dashboard' ? 'active' : ''}`}
+              onClick={() => setActiveTab('dashboard')}
+            >
+              📊 Dashboard
+            </button>
+            <button 
+              className={`nav-button ${activeTab === 'input' ? 'active' : ''}`}
+              onClick={() => setActiveTab('input')}
+            >
+              📝 Update Metrics
+            </button>
+            <button 
+              className={`nav-button ${activeTab === 'goals' ? 'active' : ''}`}
+              onClick={() => setActiveTab('goals')}
+            >
+              🎯 Set Goals
+            </button>
+          </nav>
+
+          {renderActiveTab()}
         </div>
-
-        <nav className="nav-tabs">
-          <button 
-            className={`nav-button ${activeTab === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setActiveTab('dashboard')}
-          >
-            📊 Dashboard
-          </button>
-          <button 
-            className={`nav-button ${activeTab === 'input' ? 'active' : ''}`}
-            onClick={() => setActiveTab('input')}
-          >
-            📝 Update Metrics
-          </button>
-          <button 
-            className={`nav-button ${activeTab === 'goals' ? 'active' : ''}`}
-            onClick={() => setActiveTab('goals')}
-          >
-            🎯 Set Goals
-          </button>
-        </nav>
-
-        {renderActiveTab()}
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
 

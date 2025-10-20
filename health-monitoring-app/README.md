@@ -10,6 +10,7 @@ A simple and intuitive React application to track daily health metrics and achie
 - **Progress Visualization**: Progress bars and achievement badges
 - **Data Persistence**: Local storage to save your data
 - **Weekly Summary**: View your weekly health trends
+- **Dark Mode Toggle**: Switch between light and dark themes with persistent preference
 - **Responsive Design**: Works perfectly on desktop and mobile devices
 
 ## 🚀 Technologies Used
@@ -18,6 +19,7 @@ A simple and intuitive React application to track daily health metrics and achie
 - **CSS3** - Styling and responsive design
 - **Local Storage** - Data persistence
 - **React Hooks** - State management
+- **React Context API** - Theme management
 
 ## 📦 Installation & Setup
 
