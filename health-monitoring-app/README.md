@@ -11,6 +11,7 @@ A simple and intuitive React application to track daily health metrics and achie
 - **Data Persistence**: Local storage to save your data
 - **Weekly Summary**: View your weekly health trends
 - **Dark Mode Toggle**: Switch between light and dark themes with persistent preference
+- **Reset Data**: Clear all saved data and start fresh with one-click reset functionality
 - **Responsive Design**: Works perfectly on desktop and mobile devices
 
 ## 🚀 Technologies Used
@@ -65,6 +66,9 @@ A simple and intuitive React application to track daily health metrics and achie
 - Define realistic health targets
 - Choose from recommended goal presets
 - Adjust goals based on your fitness level
+
+### 4. Reset App Data
+- Use the "Reset Data" button in the Goal Setting tab to clear all saved metrics and goals from localStorage. This is useful for starting over or testing the app. Note: this action cannot be undone.
 
 ## 📱 Screenshots & Features
 
