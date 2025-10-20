@@ -750,9 +750,9 @@ const projects = [
   },
   {
     title: "Health Monitoring App",
-    url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main/Health-Monitoring-App",
+    url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main/health-monitoring-app",
     description:
-      "A comprehensive health tracking application built with React. Track daily metrics like steps, calories, sleep, water intake, and weight with goal setting, progress visualization, and achievement badges.",
+      "A comprehensive health tracking application built with React. Track daily metrics like steps, calories, sleep, water intake, and weight with goal setting, progress visualization, achievement badges, and dark mode toggle.",
     imgSrc: "assets/health-monitor.png",
   }
 
