@@ -747,6 +747,13 @@ const projects = [
     description:
       "A full-featured job portal built with React and Supabase, featuring job search, filters, user authentication, and responsive design.",
     imgSrc: "assets/logowhite.png",
+  },
+  {
+    title: "Health Monitoring App",
+    url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main/Health-Monitoring-App",
+    description:
+      "A comprehensive health tracking application built with React. Track daily metrics like steps, calories, sleep, water intake, and weight with goal setting, progress visualization, and achievement badges.",
+    imgSrc: "assets/health-monitor.png",
   }
 
 ];
