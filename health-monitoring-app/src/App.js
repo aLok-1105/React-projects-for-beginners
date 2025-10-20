@@ -73,6 +73,17 @@ function App() {
     setGoals(prev => ({ ...prev, [metric]: value }));
   };
 
+  const resetData = (confirmReset = false) => {
+    if (!confirmReset) return false;
+    // Clear localStorage keys used by the app
+    localStorage.removeItem('healthData');
+    localStorage.removeItem('healthGoals');
+    // Reset state to default values
+    setHealthData({ steps: 0, calories: 0, sleep: 0, water: 0, weight: 0, history: [] });
+    setGoals({ steps: 10000, calories: 2000, sleep: 8, water: 8, weight: 70 });
+    return true;
+  };
+
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -80,7 +91,7 @@ function App() {
       case 'input':
         return <MetricInput healthData={healthData} updateMetric={updateMetric} />;
       case 'goals':
-        return <GoalSetting goals={goals} updateGoal={updateGoal} />;
+        return <GoalSetting goals={goals} updateGoal={updateGoal} resetData={resetData} />;
       default:
         return <Dashboard healthData={healthData} goals={goals} />;
     }

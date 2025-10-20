@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function GoalSetting({ goals, updateGoal }) {
+function GoalSetting({ goals, updateGoal, resetData }) {
   const [goalInputs, setGoalInputs] = useState({
     steps: goals.steps || '',
     calories: goals.calories || '',
@@ -212,6 +212,27 @@ function GoalSetting({ goals, updateGoal }) {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="card" style={{ textAlign: 'center' }}>
+        <h3>⚠️ Reset App Data</h3>
+        <p style={{ color: '#666' }}>This will clear all saved metrics and goals from your browser's local storage. This action cannot be undone.</p>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '12px' }}>
+          <button
+            className="button secondary"
+            onClick={() => {
+              // Ask for a simple confirmation before calling reset
+              const confirmed = window.confirm('Are you sure you want to reset all health data and goals?\n\nThis will clear all your saved metrics, goals, and history. This action cannot be undone.');
+              if (confirmed && resetData) {
+                resetData(true);
+                // Provide light feedback
+                alert('✅ App data has been reset successfully!');
+              }
+            }}
+          >
+            🗑️ Reset Data
+          </button>
         </div>
       </div>
     </div>
