@@ -16,14 +16,66 @@ export default function ImageGallery() {
   const [searchTerm, setSearchTerm] = useState('')
 
 
+  const saveToLocalStorage = (key, data) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(data))
+      return true
+    } catch (error) {
+      console.error(`Error saving ${key} to localStorage:`, error)
+      return false
+    }
+  }
+
+  const loadFromLocalStorage = (key, defaultValue = null) => {
+    try {
+      const item = localStorage.getItem(key)
+      return item ? JSON.parse(item) : defaultValue
+    } catch (error) {
+      console.error(`Error loading ${key} from localStorage:`, error)
+      return defaultValue
+    }
+  }
+
+  const clearLocalStorage = () => {
+    try {
+      localStorage.removeItem('galleryImages')
+      localStorage.removeItem('galleryCategories')
+      setImages([])
+      setCategories(['Nature', 'Friends', 'Family', 'Places', 'Food', 'Events'])
+      setSelectedCategory('All')
+      setSearchTerm('')
+      return true
+    } catch (error) {
+      console.error('Error clearing localStorage:', error)
+      return false
+    }
+  }
+
+
   useEffect(() => {
-    const savedImages = JSON.parse(localStorage.getItem('galleryImages')) || []
-    setImages(savedImages)
+    const savedImages = loadFromLocalStorage('galleryImages', [])
+    const savedCategories = loadFromLocalStorage('galleryCategories', ['Nature', 'Friends', 'Family', 'Places', 'Food', 'Events'])
+    
+    if (savedImages.length > 0) {
+      setImages(savedImages)
+    }
+    
+    if (savedCategories.length > 0) {
+      setCategories(savedCategories)
+    }
   }, [])
 
   useEffect(() => {
-    localStorage.setItem('galleryImages', JSON.stringify(images))
+    if (images.length > 0) {
+      saveToLocalStorage('galleryImages', images)
+    }
   }, [images])
+
+  useEffect(() => {
+    if (categories.length > 0) {
+      saveToLocalStorage('galleryCategories', categories)
+    }
+  }, [categories])
 
   function handleFileChange(e) {
     const files = Array.from(e.target.files)
@@ -104,7 +156,22 @@ export default function ImageGallery() {
 
   return (
     <div className="gallery-container">
-      <h1 className="gallery-title">Image Gallery</h1>
+      <div className="header-section">
+        <h1 className="gallery-title">Image Gallery</h1>
+        <div className="header-actions">
+          <button 
+            onClick={() => {
+              if (window.confirm('Are you sure you want to clear all images and reset categories? This cannot be undone.')) {
+                clearLocalStorage()
+              }
+            }}
+            className="clear-all-btn"
+            title="Clear all data"
+          >
+            Clear All Data
+          </button>
+        </div>
+      </div>
 
       <div className="file-input-container">
         <input
