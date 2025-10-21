@@ -754,6 +754,13 @@ const projects = [
     description:
       "A comprehensive health tracking application built with React. Track daily metrics like steps, calories, sleep, water intake, and weight with goal setting, progress visualization, achievement badges, and dark mode toggle.",
     imgSrc: "assets/health-monitor.png",
+  },
+   {
+    title: "RecipeMixer",
+    url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main/RecipeMixer",
+    description:
+      "Enter ingredients you have, and it suggests recipes you can make. Click a recipe to see full ingredients and cooking steps. Perfect for cooking with what is in your kitchen.",
+    imgSrc: "assets/Rmixer.png",
   }
 
 ];
