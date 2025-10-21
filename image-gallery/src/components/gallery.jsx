@@ -13,6 +13,7 @@ export default function ImageGallery() {
   ])
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [newCategory, setNewCategory] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
 
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function ImageGallery() {
           src: event.target.result,
           name: file.name,
           category: '',
+          tags: [],
           uploadDate: new Date().toISOString(),
         };
         setImages((prev) => [...prev, newImage])
@@ -60,10 +62,45 @@ export default function ImageGallery() {
     setImages((prev) => prev.filter((img) => img.id !== imageId))
   }
 
-  const filteredImages =
-    selectedCategory === 'All'
-      ? images
-      : images.filter((img) => img.category === selectedCategory)
+  function addTagToImage(imageId, tag) {
+    const trimmedTag = tag.trim().toLowerCase()
+    if (!trimmedTag) return
+    
+    setImages(prev => prev.map(img => {
+      if (img.id === imageId) {
+        const currentTags = img.tags || []
+        if (!currentTags.includes(trimmedTag)) {
+          return { ...img, tags: [...currentTags, trimmedTag] }
+        }
+      }
+      return img
+    }))
+  }
+
+  function removeTagFromImage(imageId, tagToRemove) {
+    setImages(prev => prev.map(img => 
+      img.id === imageId 
+        ? { ...img, tags: (img.tags || []).filter(tag => tag !== tagToRemove) }
+        : img
+    ))
+  }
+
+  function handleTagInput(imageId, e) {
+    if (e.key === 'Enter' && e.target.value.trim()) {
+      addTagToImage(imageId, e.target.value)
+      e.target.value = ''
+    }
+  }
+
+  const filteredImages = images.filter(image => {
+    const categoryMatch = selectedCategory === 'All' || image.category === selectedCategory
+
+    const searchMatch = !searchTerm || 
+      image.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (image.tags && image.tags.some(tag => tag.includes(searchTerm.toLowerCase())))
+    
+    return categoryMatch && searchMatch
+  })
 
   return (
     <div className="gallery-container">
@@ -79,6 +116,24 @@ export default function ImageGallery() {
         />
       </div>
 
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder=" Search images by name or tags..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+        {searchTerm && (
+          <button 
+            onClick={() => setSearchTerm('')}
+            className="clear-search-btn"
+          >
+            ×
+          </button>
+        )}
+      </div>
+
       <div className="categories-section">
         <h3 className="categories-title">Categories</h3>
 
@@ -88,7 +143,7 @@ export default function ImageGallery() {
             placeholder="Add new category"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && addCategory()}
+            onKeyUp={(e) => e.key === 'Enter' && addCategory()}
             className="category-input"
           />
           <button onClick={addCategory} className="add-category-btn">
@@ -138,6 +193,7 @@ export default function ImageGallery() {
             </div>
             <div className="image-info">
               <p className="image-name">{image.name || 'Unnamed'}</p>
+              
               <select
                 value={image.category || ''}
                 onChange={(e) => assignCategory(image.id, e.target.value)}
@@ -150,9 +206,33 @@ export default function ImageGallery() {
                   </option>
                 ))}
               </select>
+
               {image.category && (
                 <span className="category-tag">{image.category}</span>
               )}
+
+              <div className="tags-section">
+                <div className="tags-container">
+                  {(image.tags || []).map((tag, tagIndex) => (
+                    <span key={tagIndex} className="tag">
+                      #{tag}
+                      <button
+                        onClick={() => removeTagFromImage(image.id, tag)}
+                        className="tag-remove-btn"
+                        title="Remove tag"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+                <input
+                  type="text"
+                  placeholder="Add tag..."
+                  className="tag-input"
+                  onKeyUp={(e) => handleTagInput(image.id, e)}
+                />
+              </div>
             </div>
           </div>
         ))}
