@@ -1,0 +1,18 @@
+# Node modules (safety)
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Environment files
+.env
+frontend/.env
+backend/.env
+
+# OS / Editor files
+.DS_Store
+.vscode/
+*.log
+
+# Dependency locks (optional)
+yarn.lock
+pnpm-lock.yaml
