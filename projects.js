@@ -755,14 +755,7 @@ const projects = [
       "A comprehensive health tracking application built with React. Track daily metrics like steps, calories, sleep, water intake, and weight with goal setting, progress visualization, achievement badges, and dark mode toggle.",
     imgSrc: "assets/health-monitor.png",
   },
-  {
-    title: "Social Links Preview",
-    url: "",
-    description:
-      "A simple React app to display and edit social profile details with live preview.",
-    imgSrc: "assets/avatar-jessica.jpeg",
-  },
-];
+
 
 // Render all projects inside the container
 const container = document.getElementById("projects-container");
