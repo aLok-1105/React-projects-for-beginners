@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 export const GlobalContext = createContext(null);
 
 export default function GlobalState({ children }) {
-  const [searchParam, setSearchParam] = useState(() => localStorage.getItem('searchParam') || "");
+  const [searchParam, setSearchParam] = useState(() => localStorage.getItem('searchParam') || "pizzas");
   const [loading, setLoading] = useState(false);
   const [recipeList, setRecipeList] = useState(() => {
     try { return JSON.parse(localStorage.getItem('recipeList')) || []; } catch { return []; }
@@ -17,42 +17,59 @@ export default function GlobalState({ children }) {
   const [error, setError] = useState("")
   const [info, setInfo] = useState("")
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+  console.log(searchParam)
+  useEffect(() => {
+    const res = async () => {
+      if (recipeList.length === 0) {
+        try {
+          const defaultData = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes?search=pizzas`);
+          const fres = await defaultData.json();
+          console.log()
+          setRecipeList(fres.data.recipes)
+
+        } catch (error) {
+          console.log(error)
+        }
+      }
+
+    }
+    res()
+  }, [])
+
+  async function handleSubmit(event, param) {
+    if (event) event.preventDefault();
     setLoading(true);
     setError("");
     setInfo("");
-    try {
-      const start = Date.now();
-      const res = await fetch(
-        `https://forkify-api.herokuapp.com/api/v2/recipes?search=${searchParam}`
-      );
 
+    const query = param || searchParam; // use param if provided
+    try {
+      const res = await fetch(
+        `https://forkify-api.herokuapp.com/api/v2/recipes?search=${query}`
+      );
       const data = await res.json();
-      if (data?.data?.recipes) {
-        setRecipeList(data?.data?.recipes);
-        if (!data?.data?.recipes?.length) {
-          setInfo("No recipes found. Try another search.")
-        }
-        setSearchParam("");
-        navigate('/')
-      }
-      const elapsed = Date.now() - start;
-      const remaining = 1000 - elapsed;
-      if (remaining > 0) {
-        setTimeout(() => setLoading(false), remaining);
+
+      if (data?.data?.recipes?.length > 0) {
+        setRecipeList(data.data.recipes);
+        setInfo("");
       } else {
-        setLoading(false);
+        setRecipeList([]);
+        setInfo(`No recipes found for "${query}"`);
       }
+
+      setLoading(false);
     } catch (e) {
       console.log(e);
-      setError("Failed to fetch recipes. Please try again.")
-      setTimeout(() => setLoading(false), 1000);
-      setSearchParam("");
+      setError("Failed to fetch recipes. Please try again.");
+      setLoading(false);
     }
   }
+
+
+
+
 
   function handleAddToFavorite(getCurrentItem){
     console.log(getCurrentItem);

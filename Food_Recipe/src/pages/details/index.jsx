@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { GlobalContext } from "../../context";
 import Loader from "../../components/Loader";
+import ReviewSection from "./ReviewSection";
 
 export default function Details() {
   const { id } = useParams();
@@ -11,7 +12,7 @@ export default function Details() {
     favoritesList,
     handleAddToFavorite,
     error,
-    info
+    info,
   } = useContext(GlobalContext);
 
   useEffect(() => {
@@ -21,76 +22,114 @@ export default function Details() {
           `https://forkify-api.herokuapp.com/api/v2/recipes/${id}`
         );
         const data = await response.json();
-
-        console.log(data);
-        if (data?.data) {
-          setRecipeDetailsData(data?.data);
-        }
+        if (data?.data) setRecipeDetailsData(data?.data);
       } catch (e) {
         console.log(e);
       }
     }
-
     getRecipeDetails();
   }, [id, setRecipeDetailsData]);
 
-  console.log(recipeDetailsData, "recipeDetailsData");
-
   if (!recipeDetailsData && !error) return <Loader />;
 
+  const recipe = recipeDetailsData?.recipe;
+
   return (
-    <div className="container mx-auto py-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
-      <div className="row-start-2 lg:row-start-auto">
-        <div className="h-96 overflow-hidden rounded-xl group">
+    <div className="container mx-auto py-10 px-4 ">
+      <div className="bg-white  dark:bg-neutral-900 rounded-2xl shadow-lg overflow-hidden grid grid-cols-1 lg:grid-cols-2 gap-10">
+        {/* --- Left Side: Image --- */}
+        <div className="flex items-center justify-center bg-gray-50 dark:bg-neutral-800 p-4">
           <img
-            src={recipeDetailsData?.recipe?.image_url}
-            alt={recipeDetailsData?.recipe?.title || "recipe image"}
+            src={recipe?.image_url}
+            alt={recipe?.title || "recipe image"}
             loading="lazy"
-            className="w-full h-full object-cover block group-hover:scale-105 duration-300"
+            className="rounded-xl object-cover w-full h-72 lg:h-full shadow-md hover:scale-105 transition-transform duration-300"
           />
         </div>
-      </div>
-      <div className="flex flex-col gap-3">
-        <span className="text-sm text-cyan-700 font-medium">
-          {recipeDetailsData?.recipe?.publisher}
-        </span>
-        <h3 className="font-bold text-2xl truncate text-black dark:text-white">
-          {recipeDetailsData?.recipe?.title}
-        </h3>
-        <div>
-          <button
-            onClick={() => handleAddToFavorite(recipeDetailsData?.recipe)}
-            className="p-3 px-8 rounded-lg text-sm uppercase font-medium tracking-wider mt-3 inline-block shadow-md bg-black text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 duration-200"
-          >
-            {favoritesList && favoritesList.length > 0 && favoritesList.findIndex(
-              (item) => item.id === recipeDetailsData?.recipe?.id
-            ) !== -1
-              ? "Remove from favorites"
-              : "Add to favorites"}
-          </button>
-          {info && <p className="mt-2 text-green-600 dark:text-green-400">{info}</p>}
+
+        {/* --- Right Side: Content --- */}
+        <div className="flex flex-col justify-center gap-5 p-8">
+          <div>
+            <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
+              {recipe?.title}
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              by {recipe?.publisher}
+            </p>
+          </div>
+
+          {/* Description Placeholder */}
+          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+            This delicious dish is easy to make and packed with flavor. Perfect
+            for family dinners or gatherings with friends.
+          </p>
+
+          {/* Tags (Optional badges like “Main Course”, etc.) */}
+          <div className="flex flex-wrap gap-2">
+            <span className="px-3 py-1 bg-rose-100 text-rose-700 text-xs font-semibold rounded-full">
+              Main Course
+            </span>
+            <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-full">
+              American
+            </span>
+            <span className="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-semibold rounded-full">
+              Vegetarian
+            </span>
+          </div>
+
+          {/* --- Price / Button Section --- */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-4">
+            <p className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+              Rs. 210
+            </p>
+            <button
+              onClick={() => handleAddToFavorite(recipe)}
+              className="w-full sm:w-auto bg-[#800020] hover:bg-[#9c0030] text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-200"
+            >
+              {favoritesList &&
+                favoritesList.length > 0 &&
+                favoritesList.findIndex((item) => item.id === recipe?.id) !== -1
+                ? "Remove from Favorites"
+                : "Add to Favorites"}
+            </button>
+          </div>
+
+          {info && (
+            <p className="text-green-600 dark:text-green-400 text-sm">
+              {info}
+            </p>
+          )}
+
+          {/* --- Ingredients --- */}
+          <div className="mt-6">
+            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+              Ingredients:
+            </h4>
+            <ul className="space-y-2">
+              {recipe?.ingredients?.map((ingredient, i) => (
+                <li
+                  key={i}
+                  className="flex items-center text-gray-700 dark:text-gray-300 text-sm"
+                >
+                  <span className="font-medium mr-2">
+                    {ingredient?.quantity || ""} {ingredient?.unit || ""}
+                  </span>
+                  <span>{ingredient?.description}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* --- Error --- */}
+          {error && (
+            <p className="text-center text-red-600 dark:text-red-400 font-semibold mt-4">
+              {error}
+            </p>
+          )}
         </div>
-        <div>
-          <span className="text-2xl font-semibold text-black dark:text-white">
-            Ingredients:
-          </span>
-          <ul className="flex flex-col gap-3">
-            {recipeDetailsData?.recipe?.ingredients?.map((ingredient) => (
-              <li key={`${ingredient?.description}-${ingredient?.unit}-${ingredient?.quantity}`}>
-                <span className="text-2xl font-semibold text-black dark:text-white">
-                  {ingredient?.quantity} {ingredient?.unit}
-                </span>
-                <span className="text-2xl font-semibold text-black dark:text-white">
-                  {ingredient?.description}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        {error && (
-          <div className="lg:col-span-2 text-center text-red-600 dark:text-red-400 font-semibold">{error}</div>
-        )}
+
       </div>
+      <ReviewSection />
     </div>
   );
 }

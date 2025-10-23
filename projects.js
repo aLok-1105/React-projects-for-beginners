@@ -741,20 +741,65 @@ const projects = [
       "A React clone of Zomato's restaurant listing and search features.",
     imgSrc: "assets/zomato.jpeg",
   },
+  {
+    title: "JobBroad",
+    url: "https://github.com/kuNA78-hub/React-projects-for-beginners/tree/main/JobBoard/hierd",
+    description:
+      "A full-featured job portal built with React and Supabase, featuring job search, filters, user authentication, and responsive design.",
+    imgSrc: "assets/logowhite.png",
+  },
+  {
+    title: "Health Monitoring App",
+    url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main/health-monitoring-app",
+    description:
+      "A comprehensive health tracking application built with React. Track daily metrics like steps, calories, sleep, water intake, and weight with goal setting, progress visualization, achievement badges, and dark mode toggle.",
+    imgSrc: "assets/health-monitor.png",
+  },
+  {
+    title: "Gradient Generator",
+    url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main/Gradient-Generator",
+    description:
+      "A React + Vite + Tailwind app that generates random linear and radial gradients with copyable CSS code.",
+    imgSrc: "assets/gradient-generator.png",
+  },
+
+    title: "Social Links Preview",
+    url: "",
+    description:
+      "A simple React app to display and edit social profile details with live preview.",
+    imgSrc: "assets/avatar-jessica.jpeg",
+  },
+  {
+    title: "Hacker Typer",
+    url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/Hacker-Typer",
+    description:
+      "A cinematic faux-programming simulator that runs through a realistic hacking sequence, ending with a Matrix-style success screen.",
+    author: "karthik-srivathsa-05",
+    imgSrc: "assets/Hacker-Typer.png",
+    tags: ["React", "useEffect", "Canvas", "Animation", "UI"],
+  },
+  {
+    title: "Code Stats Tracker",
+    url: "https://codetrackr.netlify.app/",
+    description:
+      "CodeTrackr is a React-based app that lets users view their Codeforces profile, track solved problems, and visualize rating changes through interactive graphs and stats.",
+    imgSrc: "assets/codeStats.png",
+    author: "parth10P",
+  }
 ];
 
-
 // Render all projects inside the container
-const container = document.getElementById('projects-container');
+const container = document.getElementById("projects-container");
 
 // Enhanced rendering with staggered animation
 function renderProjects(list) {
-  container.innerHTML = ''; // clear existing
+  container.innerHTML = ""; // clear existing
   list.forEach((project, index) => {
-    const projectDiv = document.createElement('div');
-    projectDiv.className = 'col-md-3 mb-4 d-md-inline-block project-card-wrapper';
-    projectDiv.setAttribute('data-aos', 'fade-up');
-    projectDiv.setAttribute('data-aos-delay', (index % 12) * 50);
+    const projectDiv = document.createElement("div");
+    projectDiv.className =
+      "col-md-3 mb-4 d-md-inline-block project-card-wrapper";
+    projectDiv.setAttribute("data-aos", "fade-up");
+    projectDiv.setAttribute("data-aos-delay", (index % 12) * 50);
     projectDiv.innerHTML = `
       <div class="custom-card text-center card-enhanced" data-bs-toggle="tooltip" data-bs-placement="top" title="${project.description}">
         <div class="card-body h-52 flex flex-col items-center justify-center md:ml-5 gap-5">
@@ -767,10 +812,12 @@ function renderProjects(list) {
     `;
     container.appendChild(projectDiv);
   });
-  
+
   // Reinitialize tooltips if using Bootstrap
-  if (typeof bootstrap !== 'undefined') {
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  if (typeof bootstrap !== "undefined") {
+    const tooltipTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    );
     tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl);
     });
@@ -781,37 +828,38 @@ function renderProjects(list) {
 renderProjects(projects);
 
 // Update project count in intro section
-const projectCount = document.getElementById('project-count');
+const projectCount = document.getElementById("project-count");
 if (projectCount) {
-  projectCount.textContent = projects.length + '+';
+  projectCount.textContent = projects.length + "+";
 }
 
 // Enhanced search functionality with debouncing
-const searchInput = document.getElementById('project-search-input');
-const clearBtn = document.getElementById('project-clear-btn');
+const searchInput = document.getElementById("project-search-input");
+const clearBtn = document.getElementById("project-clear-btn");
 let searchTimeout;
 
-searchInput.addEventListener('input', () => {
+searchInput.addEventListener("input", () => {
   clearTimeout(searchTimeout);
   searchTimeout = setTimeout(() => {
     const query = searchInput.value.toLowerCase();
-    const filtered = projects.filter(p => 
-      p.title.toLowerCase().includes(query) ||
-      p.description.toLowerCase().includes(query)
+    const filtered = projects.filter(
+      (p) =>
+        p.title.toLowerCase().includes(query) ||
+        p.description.toLowerCase().includes(query)
     );
     renderProjects(filtered);
   }, 300); // Debounce delay
 });
 
 // Clear button functionality
-clearBtn.addEventListener('click', () => {
-  searchInput.value = '';
+clearBtn.addEventListener("click", () => {
+  searchInput.value = "";
   renderProjects(projects);
   searchInput.focus();
 });
 
 // Add CSS for enhanced project cards
-const style = document.createElement('style');
+const style = document.createElement("style");
 style.textContent = `
   .project-card-wrapper {
     opacity: 0;
