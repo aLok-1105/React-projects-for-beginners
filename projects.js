@@ -762,6 +762,14 @@ const projects = [
       "A simple React app to display and edit social profile details with live preview.",
     imgSrc: "assets/avatar-jessica.jpeg",
   },
+  {
+    title: 'Hacker Typer',
+    url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/Hacker-Typer",
+    description: 'A cinematic faux-programming simulator that runs through a realistic hacking sequence, ending with a Matrix-style success screen.',
+    author: 'karthik-srivathsa-05',
+    imgSrc: "assets/Hacker-Typer.png",
+    tags: ['React', 'useEffect', 'Canvas', 'Animation', 'UI']
+  },
 ];
 
 // Render all projects inside the container
