@@ -754,6 +754,13 @@ const projects = [
     description:
       "A comprehensive health tracking application built with React. Track daily metrics like steps, calories, sleep, water intake, and weight with goal setting, progress visualization, achievement badges, and dark mode toggle.",
     imgSrc: "assets/health-monitor.png",
+  },
+  {
+    title: "Gradient Generator",
+    url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main/Gradient-Generator",
+    description:
+      "A React + Vite + Tailwind app that generates random linear and radial gradients with copyable CSS code.",
+    imgSrc: "assets/gradient-generator.png",
   }
 
 ];
