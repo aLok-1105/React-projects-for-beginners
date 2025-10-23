@@ -756,6 +756,13 @@ const projects = [
     imgSrc: "assets/health-monitor.png",
   },
   {
+    title: "Gradient Generator",
+    url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main/Gradient-Generator",
+    description:
+      "A React + Vite + Tailwind app that generates random linear and radial gradients with copyable CSS code.",
+    imgSrc: "assets/gradient-generator.png",
+  },
+
     title: "Social Links Preview",
     url: "",
     description:
@@ -778,7 +785,7 @@ const projects = [
       "CodeTrackr is a React-based app that lets users view their Codeforces profile, track solved problems, and visualize rating changes through interactive graphs and stats.",
     imgSrc: "assets/codeStats.png",
     author: "parth10P",
-  },
+  }
 ];
 
 // Render all projects inside the container
