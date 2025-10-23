@@ -762,7 +762,7 @@ const projects = [
       "A React + Vite + Tailwind app that generates random linear and radial gradients with copyable CSS code.",
     imgSrc: "assets/gradient-generator.png",
   },
-
+{
     title: "Social Links Preview",
     url: "",
     description:
