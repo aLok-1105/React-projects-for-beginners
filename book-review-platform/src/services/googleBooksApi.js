@@ -1,7 +1,6 @@
 const GOOGLE_BOOKS_API_BASE = "https://www.googleapis.com/books/v1/volumes";
 
 /**
- * Search for books using Google Books API
  * @param {string} query - Search query
  * @param {number} maxResults - Maximum number of results (default: 20)
  * @param {number} startIndex - Starting index for pagination (default: 0)
