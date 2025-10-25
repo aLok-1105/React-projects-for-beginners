@@ -5,6 +5,7 @@ import SignIn from "../Pages/SignIn";
 
 import Login from "../Pages/Login";
 import Error404 from "../Pages/Error404";
+import Profile from "../Pages/Profile";
 import { isAuthenticated } from "../utils/auth";
 
 // Protected Route wrapper component
@@ -43,7 +44,7 @@ const Router = () => {
                   <Route path="/myreview" element={<Error404 />} />
                   <Route path="/settings" element={<Error404 />} />
                   <Route path="/login" element={<Login />} />
-                  <Route path="/profile" element={<Error404 />} />
+                  <Route path="/profile" element={<Profile />} />
                   <Route path="*" element={<Error404 />} />
                 </Routes>
               </Layout>

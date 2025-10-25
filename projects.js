@@ -762,7 +762,7 @@ const projects = [
       "A React + Vite + Tailwind app that generates random linear and radial gradients with copyable CSS code.",
     imgSrc: "assets/gradient-generator.png",
   },
-{
+  {
     title: "Social Links Preview",
     url: "",
     description:
@@ -793,6 +793,14 @@ const projects = [
       "NewsNation is a fully responsive, modern news web application built with React.js that delivers real-time, category-based news updates using the [NewsAPI](https://newsapi.org). Designed with simplicity, clarity, and usability in mind, it provides users with a smooth reading experience across devices.",
     imgSrc: "assets/news.jpeg",
     author: "Niyati-Dinesh",
+  },
+  {
+    title: "KaStore App",
+    url: "https://kastorel.netlify.app/",
+    description:
+      "KaStore is a movie and TV show catalog website built with React, TypeScript, and Material UI. It allows users to search, filter, and explore a wide range of movies and TV shows, with features like sorting by popularity, filtering by genre and language, and viewing detailed information. The app integrates with TMDb for real-time movie data and ensures a responsive, user-friendly interface.",
+    imgSrc: "assets/kastore-app.png",
+    author: "KhataiAlizade",
   },
 ];
 
