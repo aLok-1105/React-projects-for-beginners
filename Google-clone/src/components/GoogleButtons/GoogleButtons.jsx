@@ -1,6 +1,22 @@
 import "./GogleButtons.css";
 
-function GoogleButtons({ insideSuggestions }) {
+function GoogleButtons({ insideSuggestions, searchQuery }) {
+  const handleGoogleSearch = () => {
+    if (searchQuery && searchQuery.trim()) {
+      const trimmedQuery = searchQuery.trim();
+      
+      if (trimmedQuery.length > 2048) {
+        console.warn('Search query too long');
+        return;
+      }
+      
+      const sanitizedQuery = trimmedQuery.replace(/[<>]/g, '');
+      
+      const encodedQuery = encodeURIComponent(sanitizedQuery);
+      window.open(`https://www.google.com/search?q=${encodedQuery}`, '_blank');
+    }
+  };
+
   return (
     <div
       className="search-buttons"
@@ -12,6 +28,7 @@ function GoogleButtons({ insideSuggestions }) {
       }}
     >
       <button
+        onClick={handleGoogleSearch}
         style={{
           backgroundColor: insideSuggestions ? "#3c4043" : "auto",
           fontSize: insideSuggestions ? "14px" : "auto",

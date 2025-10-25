@@ -73,6 +73,40 @@ const SearchSection = () => {
     setFilteredSuggestions(mockData);
   }
 
+  const handleGoogleSearch = () => {
+    if (searchQuery && searchQuery.trim()) {
+      const trimmedQuery = searchQuery.trim();
+      
+      if (trimmedQuery.length > 2048) {
+        console.warn('Search query too long');
+        return;
+      }
+      
+      const sanitizedQuery = trimmedQuery.replace(/[<>]/g, '');
+      
+      const encodedQuery = encodeURIComponent(sanitizedQuery);
+      window.open(`https://www.google.com/search?q=${encodedQuery}`, '_blank');
+    }
+  };
+
+  const handleSuggestionClick = (suggestionText) => {
+    if (suggestionText && suggestionText.trim()) {
+      const trimmedText = suggestionText.trim();
+      
+      // security input length validation
+      if (trimmedText.length > 2048) {
+        console.warn('Suggestion text too long');
+        return;
+      }
+      
+      const sanitizedText = trimmedText.replace(/[<>]/g, '');
+      
+     // security url encoding
+      const encodedQuery = encodeURIComponent(sanitizedText);
+      window.open(`https://www.google.com/search?q=${encodedQuery}`, '_blank');
+    }
+  };
+
   return (
     <>
       <Header />
@@ -94,6 +128,7 @@ const SearchSection = () => {
                   value={searchQuery}
                   title="Search"
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleGoogleSearch()}
                   onClick={() => {
                     setShowSuggestions(true);
                     if (!searchQuery) {
@@ -136,7 +171,12 @@ const SearchSection = () => {
                   }}
                 >
                   {filteredSuggestions.map((item) => (
-                    <div key={item.id} className="suggestion-item">
+                    <div 
+                      key={item.id} 
+                      className="suggestion-item"
+                      onClick={() => handleSuggestionClick(item.name)}
+                      style={{ cursor: 'pointer' }}
+                    >
                       <div>
                         {!searchQuery || filteredSuggestions.length === 0 ? (
                           <FaArrowTrendUp className="trendIcon" />
@@ -148,14 +188,14 @@ const SearchSection = () => {
                     </div>
                   ))}
                   {filteredSuggestions.length > 0 ? (
-                    <GoogleButtons insideSuggestions={true} />
+                    <GoogleButtons insideSuggestions={true} searchQuery={searchQuery} />
                   ) : (
-                    <GoogleButtons />
+                    <GoogleButtons searchQuery={searchQuery} />
                   )}
                 </div>
               )}
               {(!showSuggestions || filteredSuggestions.length === 0) && (
-                <GoogleButtons insideSuggestions={false} />
+                <GoogleButtons insideSuggestions={false} searchQuery={searchQuery} />
               )}
             </div>
 
