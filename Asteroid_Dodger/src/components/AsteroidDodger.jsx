@@ -1,76 +1,113 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 
-/*
-Asteroid Dodger - Realistic Space Edition (React + Tailwind + Framer Motion)
-- Single-file component (JavaScript)
-- Tailwind required for styling
-- Framer Motion optional but used for polish (install with npm i framer-motion)
-*/
+// Asteroid Dodger — Canvas Edition
+// Single-file React component (JSX). Drop into your React app.
+// Styling hints: uses Tailwind classes in markup but core rendering is Canvas-based.
 
-/* ---------- Helpers ---------- */
-const rand = (min, max) => Math.random() * (max - min) + min;
-const uid = () => Math.random().toString(36).slice(2, 9);
-
-/* ---------- Component ---------- */
-export default function AsteroidDodger() {
-  // CONFIG
-  const GAME_HEIGHT = 520; // default visual height
+export default function AsteroidDodgerCanvas() {
+  // --- CONFIG ---
   const BASE_SPAWN = 900; // ms
-  const MIN_SPAWN = 260; // ms
-  const ASTEROID_MIN = 28;
-  const ASTEROID_MAX = 96;
-  const ASTEROID_BASE_SPEED = 80; // px/sec base
-  const ASTEROID_LIFESPAN = 20000; // ms fallback
-  const SHIP_BASE_WIDTH = 72; // visual width in px
+  const MIN_SPAWN = 220; // ms
+  const ASTEROID_MIN = 20;
+  const ASTEROID_MAX = 84;
+  const ASTEROID_BASE_SPEED = 80; // px/sec at reference height
+  const ASTEROID_LIFESPAN = 25000; // ms fallback
+  const SHIP_BASE_WIDTH = 72; // visual
 
-  // refs
-  const arenaRef = useRef(null);
+  // Refs for mutable game state (avoid frequent React renders)
+  const canvasRef = useRef(null);
   const rafRef = useRef(null);
-  const lastTsRef = useRef(null);
+  const lastTsRef = useRef(0);
   const spawnAccRef = useRef(0);
   const spawnIntervalRef = useRef(BASE_SPAWN);
+  const asteroidsRef = useRef([]);
+  const surviveRef = useRef(0);
+  const difficultyRef = useRef(0);
+  const runningRef = useRef(false);
+  const shipXRef = useRef(0.5); // normalized 0..1
+  const shipWidthRef = useRef(SHIP_BASE_WIDTH);
+  const collisionsRef = useRef(0);
 
-  // states
+  // UI state (lightweight, updated at throttled intervals)
   const [running, setRunning] = useState(false);
-  const [shipNormX, setShipNormX] = useState(0.5); // 0..1
-  const [asteroids, setAsteroids] = useState([]); // {id, cx, top, size, vy, vx, hue, created}
-  const [surviveMs, setSurviveMs] = useState(0);
-  const [bestMs, setBestMs] = useState(() => Number(localStorage.getItem("ad_best_real") || 0));
-  const [showOverlay, setShowOverlay] = useState(false);
+  const [survivedSec, setSurvivedSec] = useState(0);
+  const [bestSec, setBestSec] = useState(() =>
+    Math.floor(Number(localStorage.getItem("ad_best_canvas") || 0) / 1000)
+  );
+  const [asteroidCount, setAsteroidCount] = useState(0);
   const [collisionCount, setCollisionCount] = useState(0);
-  const [difficulty, setDifficulty] = useState(0); // grows with time
 
-  /* ---------- Start / End ---------- */
+  // Utility
+  const rand = (min, max) => Math.random() * (max - min) + min;
+  const uid = () => Math.random().toString(36).slice(2, 9);
+
+  // Resize canvas for device pixel ratio
+  const resizeCanvas = (canvas) => {
+    if (!canvas) return;
+    const parent = canvas.parentElement;
+    const rect = parent.getBoundingClientRect();
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    const w = Math.max(320, Math.floor(rect.width));
+    const h = Math.max(200, Math.floor(rect.height));
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = `${w}px`;
+    canvas.style.height = `${h}px`;
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+
+  // Start game
   const startGame = () => {
-    setAsteroids([]);
-    setSurviveMs(0);
-    setShowOverlay(false);
-    setCollisionCount(0);
-    setDifficulty(0);
+    asteroidsRef.current = [];
+    surviveRef.current = 0;
+    difficultyRef.current = 0;
     spawnIntervalRef.current = BASE_SPAWN;
-    lastTsRef.current = null;
+    lastTsRef.current = performance.now();
+    runningRef.current = true;
+    collisionsRef.current = 0;
+    setCollisionCount(0);
     setRunning(true);
+    // ensure UI shows 0 immediately
+    setSurvivedSec(0);
+    setAsteroidCount(0);
+    // start loop (if not already)
+    if (!rafRef.current) rafRef.current = requestAnimationFrame(loop);
   };
 
+  // Stop game (end)
   const endGame = (collided = false) => {
+    runningRef.current = false;
     setRunning(false);
-    setShowOverlay(true);
-    if (collided) setCollisionCount((c) => c + 1);
-    setAsteroids([]);
-    setBestMs((prev) => {
-      const nb = Math.max(prev, surviveMs);
-      localStorage.setItem("ad_best_real", nb);
-      return nb;
-    });
+    if (collided) {
+      collisionsRef.current += 1;
+      setCollisionCount(collisionsRef.current);
+    }
+    // store best
+    const bestMsPrev = Number(localStorage.getItem("ad_best_canvas") || 0);
+    const curMs = Math.floor(surviveRef.current);
+    if (curMs > bestMsPrev) {
+      // write async-ish
+      setTimeout(
+        () => localStorage.setItem("ad_best_canvas", String(curMs)),
+        0
+      );
+      setBestSec(Math.floor(curMs / 1000));
+    }
+    // clear asteroids
+    asteroidsRef.current = [];
+    setAsteroidCount(0);
   };
 
-  /* ---------- Spawning ---------- */
-  const spawnOne = (arenaRect) => {
+  // Spawn one asteroid using canvas size
+  const spawnOne = (width, height) => {
     const size = Math.round(rand(ASTEROID_MIN, ASTEROID_MAX));
-    const cx = rand(size / 2, arenaRect.width - size / 2); // center x in px
-    const vx = rand(-20, 20); // slight lateral drift px/sec
-    const vy = rand(ASTEROID_BASE_SPEED * 0.9, ASTEROID_BASE_SPEED * 1.8) * (1 + difficulty * 0.02);
+    const cx = rand(size / 2, width - size / 2);
+    const vx = rand(-22, 22);
+    const vy =
+      rand(ASTEROID_BASE_SPEED * 0.9, ASTEROID_BASE_SPEED * 1.8) *
+      (1 + difficultyRef.current * 0.02) *
+      (height / 520);
     const ast = {
       id: uid(),
       cx,
@@ -78,159 +115,389 @@ export default function AsteroidDodger() {
       size,
       vx,
       vy,
-      hue: Math.floor(rand(10, 50)), // earthy hues for asteroids
+      hue: Math.floor(rand(10, 50)),
       created: Date.now(),
     };
-    setAsteroids((p) => [...p, ast]);
+    asteroidsRef.current.push(ast);
   };
 
-  /* ---------- Controls: pointer + keyboard ---------- */
-  useEffect(() => {
-    const arena = arenaRef.current;
-    if (!arena) return;
+  // Canvas click to destroy asteroid
+  const handleCanvasClick = (e) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    let clientX = e.clientX;
+    let clientY = e.clientY;
+    if (e.touches && e.touches[0]) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    }
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
 
-    const handleMove = (e) => {
-      if (!running) return;
-      let clientX = e.clientX;
-      if (e.touches && e.touches[0]) clientX = e.touches[0].clientX;
-      const rect = arena.getBoundingClientRect();
-      const norm = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-      setShipNormX(norm);
-    };
+    // find nearest asteroid within radius
+    let removed = false;
+    for (let i = asteroidsRef.current.length - 1; i >= 0; i--) {
+      const a = asteroidsRef.current[i];
+      const ax = a.cx;
+      const ay = a.top + a.size / 2;
+      const r = a.size / 2;
+      const dx = ax - x;
+      const dy = ay - y;
+      if (dx * dx + dy * dy <= (r + 8) * (r + 8)) {
+        // remove and small reward (shorten survival penalty by pushing asteroid away)
+        asteroidsRef.current.splice(i, 1);
+        removed = true;
+        break;
+      }
+    }
+    if (removed) setAsteroidCount(asteroidsRef.current.length);
+  };
 
-    const onDown = (e) => {
-      handleMove(e);
-      // pointer capture handled implicitly
-    };
+  // Input: pointer move to set ship position
+  const handlePointerMove = (e) => {
+    if (!runningRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    let clientX = e.clientX;
+    if (e.touches && e.touches[0]) clientX = e.touches[0].clientX;
+    const norm = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    shipXRef.current = norm;
+  };
 
-    arena.addEventListener("mousemove", handleMove);
-    arena.addEventListener("touchmove", handleMove, { passive: true });
-    arena.addEventListener("mousedown", onDown);
-    arena.addEventListener("touchstart", onDown, { passive: true });
-
-    return () => {
-      arena.removeEventListener("mousemove", handleMove);
-      arena.removeEventListener("touchmove", handleMove);
-      arena.removeEventListener("mousedown", onDown);
-      arena.removeEventListener("touchstart", onDown);
-    };
-  }, [running]);
-
+  // Keyboard controls
   useEffect(() => {
     const onKey = (e) => {
-      if (!running) return;
-      if (e.key === "ArrowLeft" || e.key === "a") setShipNormX((s) => Math.max(0, s - 0.06));
-      if (e.key === "ArrowRight" || e.key === "d") setShipNormX((s) => Math.min(1, s + 0.06));
-      if (e.key === " "){ // pause toggle
-        setRunning((r) => !r);
+      if (e.key === " ") {
+        // toggle pause
+        if (runningRef.current) {
+          runningRef.current = false;
+          setRunning(false);
+        } else {
+          // resume
+          lastTsRef.current = performance.now();
+          runningRef.current = true;
+          setRunning(true);
+          if (!rafRef.current) rafRef.current = requestAnimationFrame(loop);
+        }
+      }
+      if (!runningRef.current) return;
+      if (e.key === "ArrowLeft" || e.key === "a")
+        shipXRef.current = Math.max(0, shipXRef.current - 0.06);
+      if (e.key === "ArrowRight" || e.key === "d")
+        shipXRef.current = Math.min(1, shipXRef.current + 0.06);
+      if (e.key === "r") {
+        endGame(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [running]);
+  }, []);
 
-  /* ---------- Core loop ---------- */
-  useEffect(() => {
-    if (!running) {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+  // Main loop (declared with function hoisting so used in other handlers)
+  const loop = (now) => {
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      rafRef.current = null;
+      return;
+    }
+    const ctx = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+
+    if (!lastTsRef.current) lastTsRef.current = now;
+    const dt = Math.min(60, now - lastTsRef.current) / 1000; // seconds, clamp
+    lastTsRef.current = now;
+
+    // If not running, just draw idle scene and stop RAF
+    if (!runningRef.current) {
+      draw(ctx, w, h, true);
       rafRef.current = null;
       return;
     }
 
-    const arena = arenaRef.current;
-    if (!arena) return;
-    const rect = arena.getBoundingClientRect();
-    const shipPxY = rect.height - 70; // ship vertical origin for collision approx (px)
-    const shipRadius = Math.max(14, SHIP_BASE_WIDTH * 0.22); // make ship collision small (nose-focused)
+    // update survive and difficulty
+    surviveRef.current += dt * 1000;
+    difficultyRef.current += (dt * 1000) / 10000; // small growth
 
-    let last = performance.now();
-    lastTsRef.current = last;
-    spawnAccRef.current = 0;
+    // spawn management
+    spawnAccRef.current += dt * 1000;
+    spawnIntervalRef.current = Math.max(
+      MIN_SPAWN,
+      BASE_SPAWN - difficultyRef.current * 14
+    );
+    if (spawnAccRef.current >= spawnIntervalRef.current) {
+      spawnAccRef.current = 0;
+      const repeat =
+        Math.random() < Math.min(0.6, difficultyRef.current / 30)
+          ? 1 + Math.round(Math.random())
+          : 1;
+      for (let i = 0; i < repeat; i++) spawnOne(w, h);
+    }
 
-    const loop = (now) => {
-      const dt = (now - last) / 1000; // seconds since last frame
-      last = now;
-
-      // update survive time and difficulty
-      setSurviveMs((prev) => prev + (now - lastTsRef.current));
-      setDifficulty((d) => d + (now - lastTsRef.current) / 10000); // small growth
-      lastTsRef.current = now;
-
-      // manage spawn timer and spawn interval shrink with difficulty
-      spawnAccRef.current += dt * 1000;
-      spawnIntervalRef.current = Math.max(MIN_SPAWN, BASE_SPAWN - difficulty * 14);
-
-      if (spawnAccRef.current >= spawnIntervalRef.current) {
-        spawnAccRef.current = 0;
-        // spawn 1 or occasionally 2 asteroids
-        const arenaRect = arena.getBoundingClientRect();
-        const repeat = Math.random() < Math.min(0.6, difficulty / 30) ? 1 + Math.round(Math.random()) : 1;
-        for (let i = 0; i < repeat; i++) spawnOne(arenaRect);
+    // move asteroids
+    const nowMs = Date.now();
+    for (let i = asteroidsRef.current.length - 1; i >= 0; i--) {
+      const a = asteroidsRef.current[i];
+      a.cx += a.vx * dt;
+      a.top += a.vy * dt;
+      // remove if out of bounds or expired
+      if (a.top - a.size > h + 120 || nowMs - a.created > ASTEROID_LIFESPAN) {
+        asteroidsRef.current.splice(i, 1);
+        continue;
       }
+    }
 
-      // move asteroids
-      setAsteroids((prev) => {
-        const nowMs = Date.now();
-        const next = [];
-        for (const a of prev) {
-          const nx = a.cx + a.vx * dt;
-          const ny = a.top + a.vy * dt;
-          // keep if inside + buffer and not expired
-          if (ny - a.size < rect.height + 120 && nowMs - a.created < ASTEROID_LIFESPAN) {
-            const moved = { ...a, cx: nx, top: ny };
-            // collision check only when asteroid near ship vertical zone to avoid premature detection
-            const asteroidCenterY = moved.top + moved.size / 2;
-            if (asteroidCenterY > shipPxY - 120) {
-              // ship center x in px
-              const shipPxX = shipNormX * rect.width;
-              // improved collision: use smaller asteroid radius multiplier (visual padding)
-              const ar = (moved.size / 2) * 0.78;
-              const dx = moved.cx - shipPxX;
-              const dy = asteroidCenterY - shipPxY;
-              const dist2 = dx * dx + dy * dy;
-              const minDist = ar + shipRadius;
-              if (dist2 <= minDist * minDist) {
-                // collision happened
-                endGame(true);
-                return []; // will clear list by returning empty
-              }
-            }
-            next.push(moved);
-          }
+    // ship position in pixels
+    const shipPxX = shipXRef.current * w;
+    const shipPxY = h - 70;
+    const shipRadius = Math.max(12, shipWidthRef.current * 0.22);
+
+    // collision detection (cheap) — check asteroids close to ship vertical zone
+    for (let i = asteroidsRef.current.length - 1; i >= 0; i--) {
+      const a = asteroidsRef.current[i];
+      const asteroidCenterY = a.top + a.size / 2;
+      if (asteroidCenterY > shipPxY - 120) {
+        const ar = (a.size / 2) * 0.78;
+        const dx = a.cx - shipPxX;
+        const dy = asteroidCenterY - shipPxY;
+        if (dx * dx + dy * dy <= (ar + shipRadius) * (ar + shipRadius)) {
+          // collision
+          endGame(true);
+          draw(ctx, w, h, false, true);
+          return; // stop loop
         }
-        return next;
-      });
+      }
+    }
 
-      rafRef.current = requestAnimationFrame(loop);
-    };
+    // periodic UI updates (throttle to 200ms)
+    if (!loop._lastUI || now - loop._lastUI > 180) {
+      loop._lastUI = now;
+      setSurvivedSec(Math.floor(surviveRef.current / 1000));
+      setAsteroidCount(asteroidsRef.current.length);
+      setCollisionCount(collisionsRef.current);
+    }
 
+    // Draw frame
+    draw(ctx, w, h, false);
+
+    // schedule next frame
     rafRef.current = requestAnimationFrame(loop);
+  };
+
+  // Drawing helper
+  const draw = (ctx, w, h, idle = false, showCrash = false) => {
+    // clear
+    ctx.clearRect(0, 0, w, h);
+
+    // background starfield
+    drawBackground(ctx, w, h, idle);
+
+    // asteroids
+    for (let i = 0; i < asteroidsRef.current.length; i++) {
+      drawAsteroid(ctx, asteroidsRef.current[i]);
+    }
+
+    // ship
+    drawShip(
+      ctx,
+      shipXRef.current * w,
+      h - 70,
+      shipWidthRef.current,
+      showCrash
+    );
+
+    // HUD small overlay (only on canvas for polish; main UI is in DOM too)
+    ctx.save();
+    ctx.font = "14px system-ui, Arial";
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.fillText(`Time: ${Math.floor(surviveRef.current / 1000)}s`, 12, 20);
+    ctx.fillText(`Asteroids: ${asteroidsRef.current.length}`, 12, 40);
+    ctx.restore();
+  };
+
+  const drawBackground = (ctx, w, h, idle) => {
+    // radial gradient + subtle stars
+    const g = ctx.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, "#000814");
+    g.addColorStop(1, "#04040b");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+
+    // stars (deterministic small pattern)
+    ctx.save();
+    ctx.globalAlpha = 0.6;
+    for (let i = 0; i < 60; i++) {
+      const x =
+        ((i * 37) % w) + (idle ? 0 : Math.sin(i + Date.now() / 8000) * 8);
+      const y =
+        ((i * 97) % h) + (idle ? 0 : Math.cos(i + Date.now() / 8000) * 6);
+      ctx.fillStyle =
+        i % 9 === 0 ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.08)";
+      ctx.beginPath();
+      ctx.arc(x, y, i % 7 === 0 ? 1.6 : 0.9, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  };
+
+  const drawAsteroid = (ctx, a) => {
+    ctx.save();
+    const x = a.cx;
+    const y = a.top;
+    const s = a.size;
+    // rotation effect via time
+    const rot = ((Date.now() - a.created) / 1000) * (0.2 + a.size / 80);
+    ctx.translate(x, y + s / 2);
+    ctx.rotate(rot);
+
+    // radial gradient fill
+    const grad = ctx.createRadialGradient(
+      -s * 0.2,
+      -s * 0.2,
+      s * 0.05,
+      0,
+      0,
+      s / 2
+    );
+    const hue = a.hue;
+    grad.addColorStop(0, `hsl(${hue} 25% 80%)`);
+    grad.addColorStop(1, `hsl(${(hue + 30) % 360} 30% 35%)`);
+    ctx.fillStyle = grad;
+
+    // main circle
+    ctx.beginPath();
+    ctx.arc(0, 0, s / 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // craters (shadows)
+    ctx.fillStyle = "rgba(0,0,0,0.14)";
+    ctx.beginPath();
+    ctx.ellipse(-s * 0.14, -s * 0.08, s * 0.18, s * 0.12, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(s * 0.14, s * 0.08, s * 0.12, s * 0.08, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(0, s * 0.22, s * 0.08, s * 0.05, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // stroke
+    ctx.strokeStyle = "rgba(0,0,0,0.45)";
+    ctx.lineWidth = Math.max(1, s * 0.03);
+    ctx.stroke();
+
+    ctx.restore();
+  };
+
+  const drawShip = (ctx, cx, cy, width, crashed = false) => {
+    ctx.save();
+    ctx.translate(cx, cy);
+    // slight tilt depending on position
+    const tilt = (shipXRef.current - 0.5) * 0.6;
+    ctx.rotate(tilt);
+
+    // engine glow
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.beginPath();
+    const grad = ctx.createRadialGradient(0, 18, 2, 0, 18, 40);
+    grad.addColorStop(
+      0,
+      crashed ? "rgba(255,80,60,0.9)" : "rgba(255, 182, 101, 0.55)"
+    );
+    grad.addColorStop(1, "rgba(255, 107, 107, 0.0)");
+    ctx.fillStyle = grad;
+    ctx.ellipse(0, 18, 20, 32, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // body
+    ctx.fillStyle = crashed ? "#ff6666" : "#bdefff";
+    ctx.strokeStyle = "rgba(255,255,255,0.06)";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(-width / 2 + 6, 10);
+    ctx.lineTo(0, -28);
+    ctx.lineTo(width / 2 - 6, 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // cockpit
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.beginPath();
+    ctx.ellipse(0, -6, 6, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  };
+
+  // Attach input listeners on mount
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    resizeCanvas(canvas);
+    const onResize = () => resizeCanvas(canvas);
+    window.addEventListener("resize", onResize);
+
+    // pointer handlers
+    canvas.addEventListener("mousemove", handlePointerMove);
+    canvas.addEventListener("touchmove", handlePointerMove, { passive: true });
+    canvas.addEventListener("mousedown", handlePointerMove);
+    canvas.addEventListener("touchstart", handlePointerMove, { passive: true });
+    canvas.addEventListener("click", handleCanvasClick);
+    canvas.addEventListener("touchend", handleCanvasClick);
+
+    // initial draw
+    const ctx = canvas.getContext("2d");
+    draw(
+      ctx,
+      canvas.getBoundingClientRect().width,
+      canvas.getBoundingClientRect().height,
+      true
+    );
+
     return () => {
+      window.removeEventListener("resize", onResize);
+      canvas.removeEventListener("mousemove", handlePointerMove);
+      canvas.removeEventListener("touchmove", handlePointerMove);
+      canvas.removeEventListener("mousedown", handlePointerMove);
+      canvas.removeEventListener("touchstart", handlePointerMove);
+      canvas.removeEventListener("click", handleCanvasClick);
+      canvas.removeEventListener("touchend", handleCanvasClick);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [running, shipNormX, difficulty]);
+  }, []);
 
-  /* ---------- Derived values ---------- */
-  const survivedSec = Math.floor(surviveMs / 1000);
-  const bestSec = Math.floor(bestMs / 1000);
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
-  /* ---------- Render ---------- */
+  // UI controls (DOM) — lightweight
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-[#020217] to-[#04040b] text-white p-6 flex items-start justify-center">
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main area */}
         <div className="lg:col-span-2">
           <div className="rounded-xl p-4 bg-[rgba(10,14,20,0.6)] border border-white/6 shadow-2xl">
-            {/* Header */}
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-extrabold flex items-center gap-3">
-                  <span className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center shadow-sm">🚀</span>
-                  Asteroid Dodger — Space Edition
+                  <span className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center shadow-sm">
+                    🚀
+                  </span>
+                  Asteroid Dodger — Canvas Edition
                 </h1>
-                <p className="text-sm text-slate-300 mt-1">Dark space theme · realistic asteroids · dodge and survive</p>
+                <p className="text-sm text-slate-300 mt-1">
+                  Optimized canvas renderer · smoother 60FPS · mobile-ready
+                </p>
               </div>
 
               <div className="flex items-center gap-4">
@@ -240,91 +507,59 @@ export default function AsteroidDodger() {
                 </div>
                 <div className="text-right">
                   <div className="text-xs text-slate-400">Best</div>
-                  <div className="text-lg font-bold text-amber-300">{bestSec}s</div>
+                  <div className="text-lg font-bold text-amber-300">
+                    {bestSec}s
+                  </div>
                 </div>
                 <div>
                   {!running ? (
-                    <button onClick={startGame} className="px-4 py-2 rounded-full bg-gradient-to-r from-slate-600 to-slate-800 font-bold shadow">Launch</button>
+                    <button
+                      onClick={startGame}
+                      className="px-4 py-2 rounded-full bg-gradient-to-r from-slate-600 to-slate-800 font-bold shadow"
+                    >
+                      Launch
+                    </button>
                   ) : (
-                    <button onClick={() => endGame(false)} className="px-4 py-2 rounded-full bg-red-600/90 font-bold shadow">Abort</button>
+                    <button
+                      onClick={() => endGame(false)}
+                      className="px-4 py-2 rounded-full bg-red-600/90 font-bold shadow"
+                    >
+                      Abort
+                    </button>
                   )}
                 </div>
               </div>
             </div>
 
-            {/* Arena */}
-            <div
-              ref={arenaRef}
-              className="relative mt-4 h-[520px] rounded-lg overflow-hidden border border-white/6"
-              style={{
-                background:
-                  "radial-gradient(circle at 10% 20%, rgba(255,255,255,0.02), transparent 6%), radial-gradient(circle at 90% 80%, rgba(255,255,255,0.01), transparent 6%), linear-gradient(180deg,#000814,#00040a)",
-              }}
-            >
-              {/* starfield layer */}
-              <Starfield />
+            <div className="relative mt-4 h-[520px] rounded-lg overflow-hidden border border-white/6">
+              <canvas ref={canvasRef} className="w-full h-full block" />
 
-              {/* ship - positioned by normalized x */}
-              <div className="absolute bottom-8 left-0 right-0 pointer-events-none">
-                <div
-                  className="mx-auto relative"
-                  style={{
-                    width: `${SHIP_BASE_WIDTH}px`,
-                    transform: `translateX(calc(${(shipNormX - 0.5) * 100}% + 0px))`,
-                    transition: "transform 80ms linear",
-                  }}
-                >
-                  <ShipSVG />
-                  {/* engine exhaust glow below ship */}
-                  <div style={{ transform: "translateY(-6px)" }} className="flex items-center justify-center">
-                    <div className="w-6 h-12 rounded-full blur-xl" style={{ background: "radial-gradient(circle,#ffb86b55,#ff6b6b00)" }} />
-                  </div>
-                </div>
-              </div>
-
-              {/* asteroids */}
-              <AnimatePresence>
-                {asteroids.map((a) => {
-                  // left/top for element: left = cx - size/2, top = a.top
-                  const left = a.cx - a.size / 2;
-                  const top = a.top;
-                  return (
-                    <motion.div
-                      key={a.id}
-                      initial={{ opacity: 0, scale: 0.6, y: -60 }}
-                      animate={{ opacity: 1, scale: 1, y: top }}
-                      exit={{ opacity: 0, scale: 0.6 }}
-                      transition={{ duration: 0.45, ease: "easeOut" }}
-                      style={{
-                        position: "absolute",
-                        left,
-                        width: a.size,
-                        height: a.size,
-                        zIndex: 20,
-                        pointerEvents: "auto",
-                      }}
-                    >
-                      <AsteroidSVG size={a.size} hue={a.hue} />
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
-
-              {/* overlay when not running */}
+              {/* Overlay when not running */}
               {!running && (
                 <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
                   <div className="pointer-events-auto bg-black/50 backdrop-blur-md border border-white/8 p-6 rounded-2xl text-center">
-                    <h2 className="text-2xl font-extrabold">{showOverlay ? "You Crashed!" : "Ready for Launch"}</h2>
-                    <p className="text-slate-300 mt-2">{showOverlay ? `Survived ${survivedSec}s` : "Move with arrow keys or drag; avoid asteroids."}</p>
+                    <h2 className="text-2xl font-extrabold">
+                      {surviveRef.current > 0
+                        ? "You Crashed!"
+                        : "Ready for Launch"}
+                    </h2>
+                    <p className="text-slate-300 mt-2">
+                      {surviveRef.current > 0
+                        ? `Survived ${Math.floor(surviveRef.current / 1000)}s`
+                        : "Move with arrow keys or drag; avoid asteroids."}
+                    </p>
                     <div className="mt-4 flex justify-center gap-3">
-                      <button onClick={startGame} className="px-4 py-2 rounded-full bg-gradient-to-r from-slate-600 to-slate-800 font-bold pointer-events-auto">
-                        {showOverlay ? "Play Again" : "Start"}
+                      <button
+                        onClick={startGame}
+                        className="px-4 py-2 rounded-full bg-gradient-to-r from-slate-600 to-slate-800 font-bold pointer-events-auto"
+                      >
+                        {surviveRef.current > 0 ? "Play Again" : "Start"}
                       </button>
-                      {showOverlay && (
+                      {surviveRef.current > 0 && (
                         <button
                           onClick={() => {
-                            localStorage.setItem("ad_best_real", 0);
-                            setBestMs(0);
+                            localStorage.setItem("ad_best_canvas", "0");
+                            setBestSec(0);
                           }}
                           className="px-3 py-2 rounded-full bg-white/6 text-sm pointer-events-auto"
                         >
@@ -337,122 +572,58 @@ export default function AsteroidDodger() {
               )}
             </div>
 
-            <div className="mt-3 text-slate-400 text-sm">Tip: the ship's nose is your true collision point — keep distance from asteroid centers.</div>
+            <div className="mt-3 text-slate-400 text-sm">
+              Tip: click an asteroid to destroy it. Use arrows or drag. Press{" "}
+              <span className="font-semibold">Space</span> to pause.
+            </div>
           </div>
         </div>
 
-        {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="sticky top-6 rounded-xl p-6 bg-[rgba(255,255,255,0.03)] border border-white/6 shadow-xl">
-            <h3 className="text-lg font-extrabold flex items-center gap-3">Flight Stats <span className="text-amber-300">🏆</span></h3>
+            <h3 className="text-lg font-extrabold flex items-center gap-3">
+              Flight Stats <span className="text-amber-300">🏆</span>
+            </h3>
             <p className="text-sm text-slate-300 mt-1">Live summary & best</p>
 
             <div className="mt-4 grid gap-3">
               <Stat title="Time Survived" value={`${survivedSec}s`} icon="⏱️" />
               <Stat title="Best Time" value={`${bestSec}s`} icon="🥇" />
               <Stat title="Collisions" value={`${collisionCount}`} icon="💥" />
-              <Stat title="Asteroids On Screen" value={`${asteroids.length}`} icon="☄️" />
+              <Stat
+                title="Asteroids On Screen"
+                value={`${asteroidCount}`}
+                icon="☄️"
+              />
             </div>
 
             <div className="mt-5">
               {!running ? (
-                <button onClick={startGame} className="w-full px-4 py-3 rounded-full bg-gradient-to-r from-slate-600 to-slate-800 font-bold">Launch Now</button>
+                <button
+                  onClick={startGame}
+                  className="w-full px-4 py-3 rounded-full bg-gradient-to-r from-slate-600 to-slate-800 font-bold"
+                >
+                  Launch Now
+                </button>
               ) : (
-                <div className="text-sm text-slate-300">Flight active — dodge carefully.</div>
+                <div className="text-sm text-slate-300">
+                  Flight active — dodge carefully.
+                </div>
               )}
             </div>
 
-            <div className="mt-4 text-xs text-slate-400">Controls: Arrow keys or drag/touch. Click asteroids to destroy for a tiny bonus.</div>
+            <div className="mt-4 text-xs text-slate-400">
+              Controls: Arrow keys or drag/touch. Click asteroids to destroy for
+              a tiny bonus.
+            </div>
           </div>
 
-          <div className="mt-4 text-center text-xs text-slate-400">Built with ❤️ • React</div>
+          <div className="mt-4 text-center text-xs text-slate-400">
+            Built with ❤️ • React • Canvas
+          </div>
         </div>
       </div>
     </div>
-  );
-}
-
-/* ---------- Subcomponents: Ship, Asteroid, Starfield, Stat ---------- */
-
-function ShipSVG() {
-  return (
-    <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-      <defs>
-        <linearGradient id="sg1" x1="0" x2="1">
-          <stop offset="0" stopColor="#98f6ff" />
-          <stop offset="1" stopColor="#7c3aed" />
-        </linearGradient>
-      </defs>
-      <g>
-        <ellipse cx="36" cy="52" rx="22" ry="6" fill="rgba(255,255,255,0.03)" />
-        <path d="M12 50 L36 12 L60 50 Z" fill="url(#sg1)" stroke="rgba(255,255,255,0.06)" strokeWidth="1.4" />
-        <rect x="30" y="22" width="12" height="14" rx="3" fill="#ffffff33" />
-        {/* cockpit glow */}
-        <ellipse cx="36" cy="30" rx="4.5" ry="3.2" fill="#ffffff88" />
-      </g>
-    </svg>
-  );
-}
-
-function AsteroidSVG({ size = 64, hue = 20 }) {
-  // simple asteroid-like SVG with rotation animation via CSS
-  const style = {
-    width: size,
-    height: size,
-    transformOrigin: "50% 50%",
-    animation: "spinAst 6s linear infinite",
-    borderRadius: "50%",
-    overflow: "hidden",
-  };
-  return (
-    <>
-      <style>{`
-        @keyframes spinAst { from{ transform: rotate(0deg)} to{ transform: rotate(360deg)} }
-      `}</style>
-      <div style={style}>
-        <svg width={size} height={size} viewBox="0 0 100 100">
-          <defs>
-            <radialGradient id={`g${hue}`} cx="30%" cy="30%">
-              <stop offset="0" stopColor={`hsl(${hue} 25% 80%)`} />
-              <stop offset="1" stopColor={`hsl(${(hue + 30) % 360} 30% 35%)`} />
-            </radialGradient>
-          </defs>
-          <circle cx="50" cy="50" r="48" fill={`url(#g${hue})`} stroke="rgba(0,0,0,0.45)" strokeWidth="2" />
-          {/* craters */}
-          <ellipse cx="36" cy="38" rx="12" ry="8" fill="rgba(0,0,0,0.12)" />
-          <ellipse cx="62" cy="54" rx="8" ry="6" fill="rgba(0,0,0,0.14)" />
-          <ellipse cx="48" cy="68" rx="6" ry="4" fill="rgba(0,0,0,0.13)" />
-        </svg>
-      </div>
-    </>
-  );
-}
-
-function Starfield() {
-  // CSS-based subtle star dots plus parallax moving small layers
-  return (
-    <>
-      <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            backgroundImage:
-              "radial-gradient(#ffffff14 1px, transparent 2px), radial-gradient(#ffffff0c 1px, transparent 3px)",
-            backgroundSize: "8px 8px, 18px 18px",
-            opacity: 0.6,
-            animation: "moveStars 40s linear infinite",
-            mixBlendMode: "screen",
-          }}
-        />
-      </div>
-      <style>{`
-        @keyframes moveStars {
-          from { transform: translateY(0) }
-          to { transform: translateY(-60px) }
-        }
-      `}</style>
-    </>
   );
 }
 
@@ -460,7 +631,10 @@ function Stat({ title, value, icon }) {
   return (
     <div className="flex items-center justify-between p-3 rounded-lg bg-white/3 border border-white/5">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xl" style={{ background: "linear-gradient(135deg,#ffffff11,#00000011)" }}>
+        <div
+          className="w-10 h-10 rounded-lg flex items-center justify-center text-xl"
+          style={{ background: "linear-gradient(135deg,#ffffff11,#00000011)" }}
+        >
           {icon}
         </div>
         <div>
