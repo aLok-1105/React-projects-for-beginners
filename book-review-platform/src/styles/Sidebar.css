@@ -14,7 +14,7 @@
 
 .sidebar-header {
   padding: 1.5rem 1rem;
-  border-bottom: 1px solid #95B9AE ;
+  border-bottom: 1px solid #95b9ae;
 }
 
 .logo-container {
@@ -26,7 +26,7 @@
 .logo-icon {
   width: 2.5rem;
   height: 2.5rem;
-  color:#7ba89a ;
+  color: #7ba89a;
   background: #fdfffe;
   border-radius: 0.5rem;
   display: flex;
@@ -85,7 +85,7 @@
 }
 
 .nav-link:hover {
-  background: #6B9686;
+  background: #6b9686;
   color: #fdfffe;
 }
 
@@ -116,8 +116,9 @@
 }
 
 .user-profile:hover {
-  background: #6B9686;
-  color: #fdfffe;}
+  background: #6b9686;
+  color: #fdfffe;
+}
 
 .avatar {
   width: 2.5rem;
@@ -133,10 +134,13 @@
 .avatar-icon {
   width: 1.25rem;
   height: 1.25rem;
-  color: #6B9686;
+  color: #6b9686;
 }
 
 .user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   flex: 1;
 }
 

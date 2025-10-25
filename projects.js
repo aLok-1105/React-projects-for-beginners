@@ -785,7 +785,15 @@ const projects = [
       "CodeTrackr is a React-based app that lets users view their Codeforces profile, track solved problems, and visualize rating changes through interactive graphs and stats.",
     imgSrc: "assets/codeStats.png",
     author: "parth10P",
-  }
+  },
+  {
+    title: "News Nation",
+    url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/newsnation",
+    description:
+      "NewsNation is a fully responsive, modern news web application built with React.js that delivers real-time, category-based news updates using the [NewsAPI](https://newsapi.org). Designed with simplicity, clarity, and usability in mind, it provides users with a smooth reading experience across devices.",
+    imgSrc: "assets/news.jpeg",
+    author: "Niyati-Dinesh",
+  },
 ];
 
 // Render all projects inside the container

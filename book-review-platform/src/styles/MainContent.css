@@ -398,6 +398,66 @@
   margin: 0 auto; /* center within main content */
 }
 
+/* Error 404 hero */
+.error-hero {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+}
+
+.error-illustration {
+  flex: 0 0 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-copy h1 {
+  margin: 0 0 0.5rem 0;
+  color: #174730;
+  font-size: 2rem;
+}
+
+.error-copy .muted {
+  color: #6c757d;
+  margin-bottom: 1.25rem;
+}
+
+.error-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-primary {
+  background: #2b7f66;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #174730;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .error-hero {
+    flex-direction: column;
+    padding: 2rem 1rem;
+  }
+  .error-illustration {
+    flex: 0 0 160px;
+  }
+}
+
 .review-card {
   background: white;
   border-radius: 12px;
