@@ -1,0 +1,291 @@
+/* Profile Page Styles */
+.profile-page {
+  margin-left: 280px; /* account for fixed sidebar */
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Simpler layout: no heavy card; use sections */
+.profile-section {
+  background: transparent; /* IG uses clean sections */
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  max-width: 935px; /* IG container width */
+  margin: 1rem auto 0 auto;
+}
+
+.profile-header {
+  display: grid;
+  grid-template-columns: 150px 1fr; /* avatar | content */
+  align-items: center;
+  column-gap: 2rem;
+  max-width: 935px; /* IG container width */
+  margin: 0 auto;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dbdbdb;
+}
+
+.profile-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  color: #262626;
+  border: 1px solid #dbdbdb; /* IG-style ring */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+.profile-avatar-image {
+  object-fit: cover;
+}
+
+.profile-identity {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-headline {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.profile-name {
+  margin: 0 0 0.25rem 0;
+  color: #262626; /* IG foreground */
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.profile-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.profile-username {
+  margin: 0;
+  color: #8e8e8e; /* IG muted */
+  font-size: 0.95rem;
+}
+
+.profile-subtle {
+  margin: 0.25rem 0 0 0;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.profile-stats-inline {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.4rem;
+  color: #262626;
+}
+
+.stat-number {
+  font-weight: 600;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.info-card {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+
+.info-label {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.825rem;
+}
+
+.info-value {
+  margin: 0.25rem 0 0 0;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.stat-card:hover {
+  border-color: #7ba89a;
+}
+
+/* Actions and buttons */
+.profile-actions {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 935px;
+  margin: 0.75rem auto 0 auto;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid #dbdbdb; /* IG button border */
+  border-radius: 8px;
+  padding: 0.4rem 0.9rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #fafafa;
+  color: #262626;
+}
+
+.btn-primary {
+  background: #fafafa;
+  color: #262626;
+}
+
+.btn-primary:hover {
+  background: #f0f0f0;
+}
+
+.btn-ghost {
+  background: #fafafa;
+  color: #262626;
+  border: 1px solid #dbdbdb;
+}
+
+.btn-ghost:hover {
+  background: #f0f0f0;
+}
+
+/* Form styles */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-label {
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.form-input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #f8f9fa;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #7ba89a;
+  background: #ffffff;
+}
+
+.form-actions {
+  margin-top: 0.75rem;
+}
+
+.section-title {
+  margin: 0 0 0.25rem 0;
+  color: #1a3a2e;
+  font-size: 1.1rem;
+}
+
+.form-error {
+  color: #b42318;
+  background: #fee4e2;
+  border: 1px solid #fecdca;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+}
+
+.form-success {
+  color: #05603a;
+  background: #d1fadf;
+  border: 1px solid #abefc6;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+}
+
+.stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #f0f8f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #7ba89a;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.stat-label {
+  color: #6c757d;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.stat-value {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .profile-page {
+    margin-left: 0;
+    padding: 1rem;
+  }
+
+  .profile-header {
+    grid-template-columns: 1fr; /* stack */
+    row-gap: 1rem;
+    justify-items: center;
+  }
+
+  .profile-avatar {
+    width: 96px;
+    height: 96px;
+    font-size: 1.25rem;
+  }
+}

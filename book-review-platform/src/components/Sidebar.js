@@ -20,6 +20,21 @@ const Sidebar = () => {
     // Load user data from localStorage
     const user = getUser();
     setUserData(user);
+    const handleUserUpdated = () => {
+      const latest = getUser();
+      setUserData(latest);
+    };
+    const handleStorage = (e) => {
+      if (e.key === "bookr_user") {
+        handleUserUpdated();
+      }
+    };
+    window.addEventListener("user:updated", handleUserUpdated);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("user:updated", handleUserUpdated);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
 
   function handleClick(item) {
@@ -58,7 +73,19 @@ const Sidebar = () => {
       </nav>
 
       <div className="sidebar-footer">
-        <div className="user-info">
+        <div
+          className="user-info"
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate("/profile")}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              navigate("/profile");
+            }
+          }}
+          aria-label="Open profile"
+        >
           <div className="avatar">
             <User className="avatar-icon" />
           </div>
