@@ -348,6 +348,35 @@
   text-align: left;
 }
 
+/* Review placeholder (when no reviews yet) */
+.review-placeholder {
+  display: flex;
+  align-items: center;
+}
+
+.review-input-mock {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 9999px; /* pill */
+  padding: 0.5rem 0.75rem;
+  color: #6c757d;
+}
+
+.review-input-icon {
+  width: 1rem;
+  height: 1rem;
+  color: #adb5bd;
+}
+
+.review-input-text {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
 /* Responsive adjustments for BookCard */
 @media (max-width: 768px) {
   .book-card-content {

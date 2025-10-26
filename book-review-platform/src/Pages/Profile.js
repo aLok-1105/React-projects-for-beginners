@@ -156,21 +156,6 @@ const Profile = () => {
                 placeholder="you@example.com"
               />
             </div>
-            <div className="form-group">
-              <label className="form-label" htmlFor="avatarUrl">
-                Profile Image URL
-              </label>
-              <input
-                id="avatarUrl"
-                type="url"
-                className="form-input"
-                value={form.avatarUrl}
-                onChange={(e) =>
-                  setForm({ ...form, avatarUrl: e.target.value })
-                }
-                placeholder="https://.../your-photo.jpg"
-              />
-            </div>
           </div>
           <div className="form-actions">
             <button
