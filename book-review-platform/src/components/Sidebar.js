@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/Sidebar.css";
-import { Home, Heart, BookOpen, User, Settings } from "lucide-react";
+import { Home, Bookmark, BookOpen, User, Settings } from "lucide-react";
 import { getUser } from "../utils/auth";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
-  { icon: Heart, label: "Favorites", path: "/favorites" },
+  { icon: Bookmark, label: "Saved", path: "/saved" },
   { icon: User, label: "My Reviews", path: "/myreview" },
   { icon: Settings, label: "Settings", path: "/settings" },
 ];

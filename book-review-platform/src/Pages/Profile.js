@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUser, updateUser, clearUser } from "../utils/auth";
 import { getUserStats } from "../utils/stats";
+import { getSavedBooks } from "../utils/savedBooks";
 import "../styles/Profile.css";
 import { Heart, MessageSquareText } from "lucide-react";
 
@@ -57,7 +58,23 @@ const Profile = () => {
       email: u.email || "",
       avatarUrl: u.avatarUrl || "",
     });
-    setStats(getUserStats());
+    
+    // Load stats and update with current saved books count
+    const currentStats = getUserStats();
+    const savedBooksCount = getSavedBooks().length;
+    setStats({
+      totalReviews: currentStats.totalReviews,
+      totalFavorites: savedBooksCount,
+    });
+
+    // Listen for savedBooks updates to refresh count
+    const handleSavedBooksUpdate = () => {
+      const updatedCount = getSavedBooks().length;
+      setStats(prev => ({ ...prev, totalFavorites: updatedCount }));
+    };
+
+    window.addEventListener("savedBooks:updated", handleSavedBooksUpdate);
+    return () => window.removeEventListener("savedBooks:updated", handleSavedBooksUpdate);
   }, [navigate]);
 
   const initials = useMemo(() => getInitials(user?.name), [user?.name]);
@@ -156,21 +173,6 @@ const Profile = () => {
                 placeholder="you@example.com"
               />
             </div>
-            <div className="form-group">
-              <label className="form-label" htmlFor="avatarUrl">
-                Profile Image URL
-              </label>
-              <input
-                id="avatarUrl"
-                type="url"
-                className="form-input"
-                value={form.avatarUrl}
-                onChange={(e) =>
-                  setForm({ ...form, avatarUrl: e.target.value })
-                }
-                placeholder="https://.../your-photo.jpg"
-              />
-            </div>
           </div>
           <div className="form-actions">
             <button
@@ -247,7 +249,7 @@ const Profile = () => {
               <Heart size={20} />
             </div>
             <div className="stat-content">
-              <span className="stat-label">Total Favourites</span>
+              <span className="stat-label">Total Saved</span>
               <span className="stat-value">{stats.totalFavorites}</span>
             </div>
           </div>
