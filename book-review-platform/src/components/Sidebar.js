@@ -6,7 +6,7 @@ import { getUser } from "../utils/auth";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
-  { icon: Bookmark, label: "Saved", path: "/favorites" },
+  { icon: Bookmark, label: "Saved", path: "/saved" },
   { icon: User, label: "My Reviews", path: "/myreview" },
   { icon: Settings, label: "Settings", path: "/settings" },
 ];

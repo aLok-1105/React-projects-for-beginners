@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Star, Heart, MessageCircle, Bookmark } from "lucide-react";
+import { saveBook, unsaveBook, isBookSaved } from "../utils/savedBooks";
 
 export const BookCard = ({
+  id,
   title,
   author,
   cover,
@@ -13,10 +15,44 @@ export const BookCard = ({
   reviewer,
   reviewerAvatar,
   showReviewContent = false, // require explicit opt-in to show default reviews
+  // ...otherProps
 }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const descriptionText = description ?? review;
+
+  // Initialize isSaved from localStorage
+  useEffect(() => {
+    if (id !== undefined) {
+      setIsSaved(isBookSaved(id));
+    }
+    // eslint-disable-next-line
+  }, [id]);
+
+  const handleSaveClick = () => {
+    if (isSaved) {
+      unsaveBook(id);
+      setIsSaved(false);
+    } else {
+      // Save all book props needed for BookCard
+      saveBook({
+        id,
+        title,
+        author,
+        cover,
+        rating,
+        reviewCount,
+        genre,
+        review,
+        description,
+        reviewer,
+        reviewerAvatar,
+      });
+      setIsSaved(true);
+    }
+    // Optionally, dispatch an event to notify sidebar/favorites
+    window.dispatchEvent(new Event("savedBooks:updated"));
+  };
 
   return (
     <div className="book-card-modern">
@@ -85,7 +121,8 @@ export const BookCard = ({
         </button>
         <button
           className={`action-button save-button ${isSaved ? "saved" : ""}`}
-          onClick={() => setIsSaved(!isSaved)}
+          onClick={handleSaveClick}
+          aria-label={isSaved ? "Unsave book" : "Save book"}
         >
           <Bookmark className={`action-icon ${isSaved ? "filled" : ""}`} />
         </button>

@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import Home from "../Pages/Home";
 import SignIn from "../Pages/SignIn";
-
+import Saved from "../Pages/Saved";
 import Login from "../Pages/Login";
 import Error404 from "../Pages/Error404";
 import Profile from "../Pages/Profile";
@@ -40,7 +40,7 @@ const Router = () => {
               <Layout>
                 <Routes>
                   <Route path="/" element={<Home />} />
-                  <Route path="/favorites" element={<Error404 />} />
+                  <Route path="/saved" element={<Saved />} />
                   <Route path="/myreview" element={<Error404 />} />
                   <Route path="/settings" element={<Error404 />} />
                   <Route path="/login" element={<Login />} />

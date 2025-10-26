@@ -209,6 +209,7 @@ const MainContent = () => {
         {books.map((book) => (
           <BookCard
             key={book.id}
+            id={book.id}
             title={book.title}
             author={book.author}
             cover={book.cover}
@@ -216,6 +217,7 @@ const MainContent = () => {
             reviewCount={book.reviewCount}
             genre={book.genre}
             review={book.review}
+            description={book.description}
             reviewer={book.reviewer}
             reviewerAvatar={book.reviewerAvatar}
           />
