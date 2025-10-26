@@ -232,7 +232,7 @@ const Profile = () => {
               <Heart size={20} />
             </div>
             <div className="stat-content">
-              <span className="stat-label">Total Favourites</span>
+              <span className="stat-label">Total Saved</span>
               <span className="stat-value">{stats.totalFavorites}</span>
             </div>
           </div>
