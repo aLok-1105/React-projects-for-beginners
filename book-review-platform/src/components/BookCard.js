@@ -117,7 +117,7 @@ export const BookCard = ({
         </button>
         <button className="action-button">
           <MessageCircle className="action-icon" />
-          <span>Comment</span>
+          <span>Review</span>
         </button>
         <button
           className={`action-button save-button ${isSaved ? "saved" : ""}`}

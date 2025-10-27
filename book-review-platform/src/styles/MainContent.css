@@ -288,9 +288,12 @@
   color: #495057;
 }
 
-.action-button.liked,
+.action-button.liked {
+  color: #e03131; /* red for liked */
+}
+
 .action-button.saved {
-  color: #3498db;
+  color: #ffc107; /* yellow for saved */
 }
 
 .action-icon {
