@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import styles from '../styles/modules/app.module.scss';
 import TodoItem from './TodoItem';
+import { clearCompletedTodos } from '../slices/todoSlice'; // ✅ import action
 
 const container = {
   hidden: { opacity: 1 },
@@ -23,6 +24,7 @@ const child = {
 };
 
 function AppContent() {
+  const dispatch = useDispatch();
   const todoList = useSelector((state) => state.todo.todoList);
   const filterStatus = useSelector((state) => state.todo.filterStatus);
 
@@ -36,6 +38,13 @@ function AppContent() {
     return item.status === filterStatus;
   });
 
+  // ✅ Handler for clearing completed todos
+  const handleClearCompleted = () => {
+    dispatch(clearCompletedTodos());
+  };
+
+  const hasCompleted = todoList.some((todo) => todo.status === 'complete');
+
   return (
     <motion.div
       className={styles.content__wrapper}
@@ -43,12 +52,33 @@ function AppContent() {
       initial="hidden"
       animate="visible"
     >
+      {/* ✅ Clear Completed button */}
+      {hasCompleted && (
+        <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
+          <button
+            onClick={handleClearCompleted}
+            style={{
+              backgroundColor: '#ff5c5c',
+              border: 'none',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: '500',
+              transition: 'background 0.2s',
+            }}
+            onMouseOver={(e) => (e.target.style.backgroundColor = '#ff3b3b')}
+            onMouseOut={(e) => (e.target.style.backgroundColor = '#ff5c5c')}
+          >
+            Clear Completed
+          </button>
+        </div>
+      )}
+
       <AnimatePresence>
         {filteredTodoList && filteredTodoList.length > 0 ? (
           filteredTodoList.map((todo) => (
-            // <motion.div key={todo.id} variants={child}>
             <TodoItem key={todo.id} todo={todo} />
-            // </motion.div>
           ))
         ) : (
           <motion.p variants={child} className={styles.emptyText}>

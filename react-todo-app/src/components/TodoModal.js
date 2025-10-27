@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { MdOutlineClose } from 'react-icons/md';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { addTodo, updateTodo } from '../slices/todoSlice';
@@ -31,6 +31,7 @@ const dropIn = {
 
 function TodoModal({ type, modalOpen, setModalOpen, todo }) {
   const dispatch = useDispatch();
+  const { todoList } = useSelector((state) => state.todo); // ✅ to check for duplicates
   const [title, setTitle] = useState('');
   const [status, setStatus] = useState('incomplete');
 
@@ -46,33 +47,45 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (title === '') {
+    const trimmedTitle = title.trim();
+
+    if (!trimmedTitle) {
       toast.error('Please enter a title');
       return;
     }
-    if (title && status) {
-      if (type === 'add') {
-        dispatch(
-          addTodo({
-            id: uuid(),
-            title,
-            status,
-            time: new Date().toLocaleString(),
-          })
-        );
-        toast.success('Task added successfully');
-      }
-      if (type === 'update') {
-        if (todo.title !== title || todo.status !== status) {
-          dispatch(updateTodo({ ...todo, title, status }));
-          toast.success('Task Updated successfully');
-        } else {
-          toast.error('No changes made');
-          return;
-        }
-      }
-      setModalOpen(false);
+
+    // ✅ Prevent duplicate titles on "add"
+    if (
+      type === 'add' &&
+      todoList.some((t) => t.title.toLowerCase() === trimmedTitle.toLowerCase())
+    ) {
+      toast.error('Task with this title already exists');
+      return;
     }
+
+    if (type === 'add') {
+      dispatch(
+        addTodo({
+          id: uuid(),
+          title: trimmedTitle,
+          status,
+          time: new Date().toLocaleString(),
+        })
+      );
+      toast.success('Task added successfully');
+    }
+
+    if (type === 'update') {
+      if (todo.title !== trimmedTitle || todo.status !== status) {
+        dispatch(updateTodo({ ...todo, title: trimmedTitle, status }));
+        toast.success('Task updated successfully');
+      } else {
+        toast.error('No changes made');
+        return;
+      }
+    }
+
+    setModalOpen(false);
   };
 
   return (
@@ -97,7 +110,6 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
               onClick={() => setModalOpen(false)}
               role="button"
               tabIndex={0}
-              // animation
               initial={{ top: 40, opacity: 0 }}
               animate={{ top: -10, opacity: 1 }}
               exit={{ top: 40, opacity: 0 }}
@@ -105,10 +117,11 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
               <MdOutlineClose />
             </motion.div>
 
-            <form className={styles.form} onSubmit={(e) => handleSubmit(e)}>
+            <form className={styles.form} onSubmit={handleSubmit}>
               <h1 className={styles.formTitle}>
                 {type === 'add' ? 'Add' : 'Update'} TODO
               </h1>
+
               <label htmlFor="title">
                 Title
                 <input
@@ -116,8 +129,10 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
                   id="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter task name"
                 />
               </label>
+
               <label htmlFor="type">
                 Status
                 <select
@@ -129,6 +144,7 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
                   <option value="complete">Completed</option>
                 </select>
               </label>
+
               <div className={styles.buttonContainer}>
                 <Button type="submit" variant="primary">
                   {type === 'add' ? 'Add Task' : 'Update Task'}
