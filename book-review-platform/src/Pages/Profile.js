@@ -58,7 +58,7 @@ const Profile = () => {
       email: u.email || "",
       avatarUrl: u.avatarUrl || "",
     });
-    
+
     // Load stats and update with current saved books count
     const currentStats = getUserStats();
     const savedBooksCount = getSavedBooks().length;
@@ -70,11 +70,12 @@ const Profile = () => {
     // Listen for savedBooks updates to refresh count
     const handleSavedBooksUpdate = () => {
       const updatedCount = getSavedBooks().length;
-      setStats(prev => ({ ...prev, totalFavorites: updatedCount }));
+      setStats((prev) => ({ ...prev, totalFavorites: updatedCount }));
     };
 
     window.addEventListener("savedBooks:updated", handleSavedBooksUpdate);
-    return () => window.removeEventListener("savedBooks:updated", handleSavedBooksUpdate);
+    return () =>
+      window.removeEventListener("savedBooks:updated", handleSavedBooksUpdate);
   }, [navigate]);
 
   const initials = useMemo(() => getInitials(user?.name), [user?.name]);

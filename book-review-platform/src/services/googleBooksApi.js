@@ -77,8 +77,8 @@ export const transformGoogleBook = (googleBook) => {
       imageLinks.thumbnail ||
       imageLinks.smallThumbnail ||
       "/placeholder-book.jpg",
-    rating: volumeInfo.averageRating || 0,
-    reviewCount: volumeInfo.ratingsCount || 0,
+    rating: 0, // Start with 0, will be calculated from platform reviews
+    reviewCount: 0, // Start with 0, will be counted from platform reviews
     genre: volumeInfo.categories ? volumeInfo.categories[0] : "General",
     description: volumeInfo.description || "No description available.",
     publishedDate: volumeInfo.publishedDate || "",
