@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUser, updateUser, clearUser } from "../utils/auth";
-import { getUserStats } from "../utils/stats";
 import { getReviewedBooksForUser } from "../utils/reviewedBooks";
 import { getSavedBooks } from "../utils/savedBooks";
 import "../styles/Profile.css";
@@ -90,9 +89,7 @@ const Profile = () => {
   }, [navigate]);
 
   const initials = useMemo(() => getInitials(user?.name), [user?.name]);
-
   if (!user) return null;
-
   return (
     <main className="profile-page">
       <div className="profile-header">

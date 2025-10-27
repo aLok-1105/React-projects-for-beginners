@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { getUser } from "../utils/auth";
 import {
   getReviewedBooksForUser,
-  upsertReviewedBookForUser,
   clearReviewedBooksForUser,
 } from "../utils/reviewedBooks";
 import { getAllReviews, clearReviewsByUser } from "../utils/reviews";
@@ -19,7 +18,7 @@ const MyReview = () => {
       setBooks([]);
       return;
     }
-    // Step 1: Ensure previously-reviewed books are included (migration)
+    // Migration: Ensure previously-reviewed books are included
     try {
       const all = getAllReviews();
       const userBookIds = Object.keys(all).filter((bookId) =>
@@ -31,22 +30,15 @@ const MyReview = () => {
       if (userBookIds.length > 0) {
         const existing = getReviewedBooksForUser(user.name);
         const existingIds = new Set(existing.map((b) => String(b.id)));
-
-        const saved = getSavedBooks();
-        const savedMap = new Map(saved.map((b) => [String(b.id), b]));
-
-        // Fetch details for missing ones (prefer saved, else API)
+        const savedMap = new Map(getSavedBooks().map((b) => [String(b.id), b]));
         const tasks = userBookIds
           .filter((bid) => !existingIds.has(String(bid)))
           .map(async (bid) => {
             let bookObj = savedMap.get(String(bid));
             if (!bookObj) {
               try {
-                // Fallback to API to get book details
-                const fetched = await getBookById(bid);
-                bookObj = fetched;
-              } catch (e) {
-                // Last resort: minimal placeholder
+                bookObj = await getBookById(bid);
+              } catch {
                 bookObj = {
                   id: bid,
                   title: "Book",
@@ -59,12 +51,12 @@ const MyReview = () => {
                 };
               }
             }
-            upsertReviewedBookForUser(user.name, bookObj);
+            // Only upsert if bookObj is valid
+            if (bookObj && bookObj.id) {
+              getReviewedBooksForUser(user.name).unshift(bookObj);
+            }
           });
-
-        if (tasks.length) {
-          await Promise.all(tasks);
-        }
+        if (tasks.length) await Promise.all(tasks);
       }
     } catch (e) {
       // Non-blocking; continue with what we have
