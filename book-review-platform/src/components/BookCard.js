@@ -24,6 +24,10 @@ export const BookCard = ({
   const [rating, setRating] = useState(initialRating || 0);
   const [reviewCount, setReviewCount] = useState(initialReviewCount || 0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [isReviewing, setIsReviewing] = useState(false);
+  const [reviewText, setReviewText] = useState("");
+  const [userRating, setUserRating] = useState(0);
+  const [hoverUserRating, setHoverUserRating] = useState(0);
   const descriptionText = description ?? review;
 
   // Initialize isSaved from localStorage and load real-time ratings
@@ -35,6 +39,16 @@ export const BookCard = ({
       const stats = getBookStats(id);
       setRating(stats.rating);
       setReviewCount(stats.reviewCount);
+
+      // Load user's existing review if any
+      const user = getUser();
+      if (user) {
+        const existingReview = getUserReview(id, user.name);
+        if (existingReview) {
+          setUserRating(existingReview.rating);
+          setReviewText(existingReview.text || "");
+        }
+      }
     }
     // eslint-disable-next-line
   }, [id]);
@@ -91,19 +105,82 @@ export const BookCard = ({
 
     const success = addReview(id, {
       rating: starRating,
-      text: existingReview?.text || "", // Preserve existing review text if any
+      text: existingReview?.text || reviewText || "", // Preserve existing review text if any
       userName: user.name,
       userAvatar: user.avatarUrl || "",
     });
 
-    if (success && existingReview) {
-      // Optional: Show a brief notification that rating was updated
-      console.log(
-        "Rating updated from",
-        existingReview.rating,
-        "to",
-        starRating
-      );
+    if (success) {
+      setUserRating(starRating);
+      if (existingReview) {
+        console.log(
+          "Rating updated from",
+          existingReview.rating,
+          "to",
+          starRating
+        );
+      }
+    }
+  };
+
+  const handleReviewClick = () => {
+    const user = getUser();
+    if (!user) {
+      alert("Please sign in to write a review");
+      return;
+    }
+    setIsReviewing(true);
+    // Scroll to review section
+    setTimeout(() => {
+      const reviewSection = document.querySelector(`#review-section-${id}`);
+      if (reviewSection) {
+        reviewSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        const textarea = reviewSection.querySelector("textarea");
+        if (textarea) textarea.focus();
+      }
+    }, 100);
+  };
+
+  const handleSubmitReview = () => {
+    const user = getUser();
+    if (!user) {
+      alert("Please sign in to submit a review");
+      return;
+    }
+
+    if (userRating === 0) {
+      alert("Please select a rating (click on stars above)");
+      return;
+    }
+
+    const success = addReview(id, {
+      rating: userRating,
+      text: reviewText.trim(),
+      userName: user.name,
+      userAvatar: user.avatarUrl || "",
+    });
+
+    if (success) {
+      setIsReviewing(false);
+      // Keep reviewText so it shows in the placeholder after submit
+    } else {
+      alert("Failed to submit review. Please try again.");
+    }
+  };
+
+  const handleCancelReview = () => {
+    setIsReviewing(false);
+    // Reset to original review if user had one, otherwise clear
+    const user = getUser();
+    if (user) {
+      const existingReview = getUserReview(id, user.name);
+      if (existingReview) {
+        setReviewText(existingReview.text || "");
+        setUserRating(existingReview.rating);
+      } else {
+        setReviewText("");
+        setUserRating(0);
+      }
     }
   };
 
@@ -177,6 +254,10 @@ export const BookCard = ({
           <Heart className={`action-icon ${isLiked ? "filled" : ""}`} />
           <span>Like</span>
         </button>
+        <button className="action-button" onClick={handleReviewClick}>
+          <MessageCircle className="action-icon" />
+          <span>Review</span>
+        </button>
         <button
           className={`action-button save-button ${isSaved ? "saved" : ""}`}
           onClick={handleSaveClick}
@@ -187,27 +268,71 @@ export const BookCard = ({
       </div>
 
       {/* Reviewer / Placeholder - Below Actions */}
-      <div className="reviewer-section">
-        {showReviewContent && review ? (
-          <div className="reviewer-info">
-            <span className="reviewer-name">{reviewer}</span>
-            <div className="reviewer-avatar">
-              <img
-                src={reviewerAvatar}
-                alt={reviewer}
-                onError={(e) => {
-                  e.target.src =
-                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23e9ecef'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='12' fill='%236c757d'%3E👤%3C/text%3E%3C/svg%3E";
-                }}
-              />
+      <div className="reviewer-section" id={`review-section-${id}`}>
+        {isReviewing ? (
+          <div className="review-input-container">
+            <div className="review-rating-selector">
+              <span className="review-rating-label">Your rating:</span>
+              <div className="review-stars">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    size={24}
+                    className={`review-star ${
+                      star <= (hoverUserRating || userRating)
+                        ? "star-filled"
+                        : "star-empty"
+                    }`}
+                    onClick={() => setUserRating(star)}
+                    onMouseEnter={() => setHoverUserRating(star)}
+                    onMouseLeave={() => setHoverUserRating(0)}
+                  />
+                ))}
+                <span className="review-rating-text">
+                  {userRating > 0
+                    ? `${userRating} star${userRating > 1 ? "s" : ""}`
+                    : "Select rating"}
+                </span>
+              </div>
+            </div>
+            <textarea
+              className="review-textarea-input"
+              placeholder="Write your review here..."
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              rows={3}
+              maxLength={500}
+            />
+            <div className="review-actions">
+              <button
+                className="review-btn review-btn-cancel"
+                onClick={handleCancelReview}
+              >
+                Cancel
+              </button>
+              <button
+                className="review-btn review-btn-submit"
+                onClick={handleSubmitReview}
+                disabled={userRating === 0}
+              >
+                Submit Review
+              </button>
             </div>
           </div>
         ) : (
-          <div className="review-placeholder">
+          <div
+            className="review-placeholder"
+            onClick={handleReviewClick}
+            style={{ cursor: "pointer" }}
+          >
             <div className="review-input-mock">
               <MessageCircle className="review-input-icon" />
               <span className="review-input-text">
-                Be the first to review...
+                {reviewText
+                  ? `You reviewed: "${reviewText.substring(0, 50)}${
+                      reviewText.length > 50 ? "..." : ""
+                    }"`
+                  : "Be the first to review..."}
               </span>
             </div>
           </div>
