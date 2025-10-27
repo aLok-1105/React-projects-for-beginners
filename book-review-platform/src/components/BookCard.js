@@ -3,6 +3,7 @@ import { Star, Heart, Bookmark, MessageCircle } from "lucide-react";
 import { saveBook, unsaveBook, isBookSaved } from "../utils/savedBooks";
 import { getBookStats, addReview, getUserReview } from "../utils/reviews";
 import { getUser } from "../utils/auth";
+import { upsertReviewedBookForUser } from "../utils/reviewedBooks";
 
 export const BookCard = ({
   id,
@@ -111,6 +112,20 @@ export const BookCard = ({
     });
 
     if (success) {
+      // Ensure this book appears in My Reviews for this user
+      upsertReviewedBookForUser(user.name, {
+        id,
+        title,
+        author,
+        cover,
+        rating,
+        reviewCount,
+        genre,
+        review,
+        description,
+        reviewer,
+        reviewerAvatar,
+      });
       setUserRating(starRating);
       if (existingReview) {
         console.log(
@@ -161,6 +176,20 @@ export const BookCard = ({
     });
 
     if (success) {
+      // Ensure this book appears in My Reviews for this user
+      upsertReviewedBookForUser(user.name, {
+        id,
+        title,
+        author,
+        cover,
+        rating,
+        reviewCount,
+        genre,
+        review,
+        description,
+        reviewer,
+        reviewerAvatar,
+      });
       setIsReviewing(false);
       // Keep reviewText so it shows in the placeholder after submit
     } else {
