@@ -43,7 +43,6 @@ const Router = () => {
                   <Route path="/" element={<Home />} />
                   <Route path="/saved" element={<Saved />} />
                   <Route path="/myreview" element={<MyReview />} />
-                  <Route path="/settings" element={<Error404 />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="*" element={<Error404 />} />
