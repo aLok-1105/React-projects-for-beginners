@@ -17,8 +17,8 @@ const sampleBooks = [
     author: "F. Scott Fitzgerald",
     cover:
       "https://books.google.com/books/content?id=iJZYAAAAMAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
-    rating: 4.5,
-    reviewCount: 234,
+    rating: 0,
+    reviewCount: 0,
     genre: "Classic Literature",
     review:
       "A masterpiece of American literature. Fitzgerald's prose is beautiful and the story of Jay Gatsby is both tragic and captivating. The themes of love, wealth, and the American Dream are expertly woven throughout.",
@@ -33,8 +33,8 @@ const sampleBooks = [
     author: "Harper Lee",
     cover:
       "https://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
-    rating: 5,
-    reviewCount: 189,
+    rating: 0,
+    reviewCount: 0,
     genre: "Fiction",
     review:
       "An incredible story about justice, morality, and growing up in the American South. Scout's perspective is both innocent and profound. This book tackles difficult subjects with grace and power.",
@@ -49,8 +49,8 @@ const sampleBooks = [
     author: "George Orwell",
     cover:
       "https://books.google.com/books/content?id=kotPYEqx7kMC&printsec=frontcover&img=1&zoom=1&source=gbs_api",
-    rating: 4.8,
-    reviewCount: 312,
+    rating: 0,
+    reviewCount: 0,
     genre: "Dystopian",
     review:
       "A chilling dystopian novel that feels more relevant than ever. Orwell's vision of a totalitarian society is both terrifying and thought-provoking. The concepts of Big Brother and doublethink are unforgettable.",

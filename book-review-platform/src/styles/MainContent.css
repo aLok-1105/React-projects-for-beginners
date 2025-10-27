@@ -183,6 +183,15 @@
 .star-icon {
   width: 1rem;
   height: 1rem;
+  transition: all 0.2s ease;
+}
+
+.star-icon.star-interactive {
+  cursor: pointer;
+}
+
+.star-icon.star-interactive:hover {
+  transform: scale(1.15);
 }
 
 .star-filled {

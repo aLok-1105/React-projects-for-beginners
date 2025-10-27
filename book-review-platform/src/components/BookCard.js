@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Star, Heart, MessageCircle, Bookmark } from "lucide-react";
 import { saveBook, unsaveBook, isBookSaved } from "../utils/savedBooks";
+import { getBookStats, addReview, getUserReview } from "../utils/reviews";
+import { getUser } from "../utils/auth";
+import { ReviewModal } from "./ReviewModal";
 
 export const BookCard = ({
   id,
   title,
   author,
   cover,
-  rating,
-  reviewCount,
+  rating: initialRating,
+  reviewCount: initialReviewCount,
   genre,
   review,
   description,
@@ -19,14 +22,38 @@ export const BookCard = ({
 }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [rating, setRating] = useState(initialRating || 0);
+  const [reviewCount, setReviewCount] = useState(initialReviewCount || 0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [showReviewModal, setShowReviewModal] = useState(false);
   const descriptionText = description ?? review;
 
-  // Initialize isSaved from localStorage
+  // Initialize isSaved from localStorage and load real-time ratings
   useEffect(() => {
     if (id !== undefined) {
       setIsSaved(isBookSaved(id));
+
+      // Load real ratings from reviews
+      const stats = getBookStats(id);
+      setRating(stats.rating);
+      setReviewCount(stats.reviewCount);
     }
     // eslint-disable-next-line
+  }, [id]);
+
+  // Listen for review updates
+  useEffect(() => {
+    const handleReviewUpdate = (e) => {
+      if (e.detail?.bookId === id) {
+        const stats = getBookStats(id);
+        setRating(stats.rating);
+        setReviewCount(stats.reviewCount);
+      }
+    };
+
+    window.addEventListener("reviews:updated", handleReviewUpdate);
+    return () =>
+      window.removeEventListener("reviews:updated", handleReviewUpdate);
   }, [id]);
 
   const handleSaveClick = () => {
@@ -52,6 +79,38 @@ export const BookCard = ({
     }
     // Optionally, dispatch an event to notify sidebar/favorites
     window.dispatchEvent(new Event("savedBooks:updated"));
+  };
+
+  const handleStarClick = (starRating) => {
+    // Quick rate - add a rating without text review
+    const user = getUser();
+    if (!user) {
+      alert("Please sign in to rate books");
+      return;
+    }
+
+    const existingReview = getUserReview(id, user.name);
+
+    const success = addReview(id, {
+      rating: starRating,
+      text: existingReview?.text || "", // Preserve existing review text if any
+      userName: user.name,
+      userAvatar: user.avatarUrl || "",
+    });
+
+    if (success && existingReview) {
+      // Optional: Show a brief notification that rating was updated
+      console.log(
+        "Rating updated from",
+        existingReview.rating,
+        "to",
+        starRating
+      );
+    }
+  };
+
+  const handleReviewClick = () => {
+    setShowReviewModal(true);
   };
 
   return (
@@ -84,13 +143,22 @@ export const BookCard = ({
                     <Star
                       key={i}
                       className={`star-icon ${
-                        i < Math.floor(rating) ? "star-filled" : "star-empty"
-                      }`}
+                        i < Math.floor(hoverRating || rating)
+                          ? "star-filled"
+                          : "star-empty"
+                      } star-interactive`}
+                      onClick={() => handleStarClick(i + 1)}
+                      onMouseEnter={() => setHoverRating(i + 1)}
+                      onMouseLeave={() => setHoverRating(0)}
                     />
                   ))}
-                  <span className="rating-text">{rating}</span>
+                  <span className="rating-text">
+                    {rating > 0 ? rating : "No ratings yet"}
+                  </span>
                 </div>
-                <span className="review-count">{reviewCount} reviews</span>
+                <span className="review-count">
+                  {reviewCount} {reviewCount === 1 ? "review" : "reviews"}
+                </span>
               </div>
 
               <div className="genre-badge">{genre}</div>
@@ -115,7 +183,7 @@ export const BookCard = ({
           <Heart className={`action-icon ${isLiked ? "filled" : ""}`} />
           <span>Like</span>
         </button>
-        <button className="action-button">
+        <button className="action-button" onClick={handleReviewClick}>
           <MessageCircle className="action-icon" />
           <span>Review</span>
         </button>
@@ -127,6 +195,15 @@ export const BookCard = ({
           <Bookmark className={`action-icon ${isSaved ? "filled" : ""}`} />
         </button>
       </div>
+
+      {/* Review Modal */}
+      {showReviewModal && (
+        <ReviewModal
+          bookId={id}
+          bookTitle={title}
+          onClose={() => setShowReviewModal(false)}
+        />
+      )}
 
       {/* Reviewer / Placeholder - Below Actions */}
       <div className="reviewer-section">
