@@ -4,7 +4,6 @@ import Home from "../Pages/Home";
 import SignIn from "../Pages/SignIn";
 import Saved from "../Pages/Saved";
 import MyReview from "../Pages/MyReview";
-import Login from "../Pages/Login";
 import Error404 from "../Pages/Error404";
 import Profile from "../Pages/Profile";
 import { isAuthenticated } from "../utils/auth";
@@ -43,8 +42,6 @@ const Router = () => {
                   <Route path="/" element={<Home />} />
                   <Route path="/saved" element={<Saved />} />
                   <Route path="/myreview" element={<MyReview />} />
-                  <Route path="/settings" element={<Error404 />} />
-                  <Route path="/login" element={<Login />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="*" element={<Error404 />} />
                 </Routes>

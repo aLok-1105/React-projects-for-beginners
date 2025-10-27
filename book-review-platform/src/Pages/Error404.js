@@ -2,21 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/MainContent.css";
 
-const Error404 = ({
-  title = "Page not found",
-  message,
-  backLabel = "Back to Home",
-  onBack,
-}) => {
+const Error404 = () => {
   const navigate = useNavigate();
-
-  const handleBackToHome = () => {
-    if (onBack) {
-      onBack();
-    } else {
-      navigate("/");
-    }
-  };
+  const handleBackToHome = () => navigate("/");
 
   return (
     <div className="main-content">
@@ -52,15 +40,13 @@ const Error404 = ({
         </div>
 
         <div className="error-copy">
-          <h1>{title}</h1>
+          <h1>Page not found</h1>
           <p className="muted">
-            {message ||
-              "The page you're looking for doesn't exist or hasn't been built yet."}
+            The page you're looking for doesn't exist or hasn't been built yet.
           </p>
-
           <div className="error-actions">
             <button className="btn-primary" onClick={handleBackToHome}>
-              {backLabel}
+              Back to Home
             </button>
             <button
               className="btn-ghost"

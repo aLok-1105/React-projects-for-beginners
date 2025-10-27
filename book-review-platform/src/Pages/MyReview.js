@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { getUser } from "../utils/auth";
 import {
   getReviewedBooksForUser,
-  upsertReviewedBookForUser,
+  clearReviewedBooksForUser,
 } from "../utils/reviewedBooks";
-import { getAllReviews } from "../utils/reviews";
+import { getAllReviews, clearReviewsByUser } from "../utils/reviews";
 import { getSavedBooks } from "../utils/savedBooks";
 import { getBookById } from "../services/googleBooksApi";
 import { BookCard } from "../components/BookCard";
@@ -18,8 +18,7 @@ const MyReview = () => {
       setBooks([]);
       return;
     }
-
-    // Step 1: Ensure previously-reviewed books are included (migration)
+    // Migration: Ensure previously-reviewed books are included
     try {
       const all = getAllReviews();
       const userBookIds = Object.keys(all).filter((bookId) =>
@@ -31,22 +30,15 @@ const MyReview = () => {
       if (userBookIds.length > 0) {
         const existing = getReviewedBooksForUser(user.name);
         const existingIds = new Set(existing.map((b) => String(b.id)));
-
-        const saved = getSavedBooks();
-        const savedMap = new Map(saved.map((b) => [String(b.id), b]));
-
-        // Fetch details for missing ones (prefer saved, else API)
+        const savedMap = new Map(getSavedBooks().map((b) => [String(b.id), b]));
         const tasks = userBookIds
           .filter((bid) => !existingIds.has(String(bid)))
           .map(async (bid) => {
             let bookObj = savedMap.get(String(bid));
             if (!bookObj) {
               try {
-                // Fallback to API to get book details
-                const fetched = await getBookById(bid);
-                bookObj = fetched;
-              } catch (e) {
-                // Last resort: minimal placeholder
+                bookObj = await getBookById(bid);
+              } catch {
                 bookObj = {
                   id: bid,
                   title: "Book",
@@ -59,12 +51,12 @@ const MyReview = () => {
                 };
               }
             }
-            upsertReviewedBookForUser(user.name, bookObj);
+            // Only upsert if bookObj is valid
+            if (bookObj && bookObj.id) {
+              getReviewedBooksForUser(user.name).unshift(bookObj);
+            }
           });
-
-        if (tasks.length) {
-          await Promise.all(tasks);
-        }
+        if (tasks.length) await Promise.all(tasks);
       }
     } catch (e) {
       // Non-blocking; continue with what we have
@@ -91,6 +83,19 @@ const MyReview = () => {
     };
   }, []);
 
+  const handleClearAll = async () => {
+    const user = getUser();
+    if (!user) return;
+    if (!books.length) return;
+    const confirmClear = window.confirm(
+      "This will remove all your reviews and ratings and clear My Reviews. Continue?"
+    );
+    if (!confirmClear) return;
+    clearReviewsByUser(user.name);
+    clearReviewedBooksForUser(user.name);
+    await load();
+  };
+
   return (
     <main
       style={{
@@ -100,7 +105,36 @@ const MyReview = () => {
         background: "#f8f9fa",
       }}
     >
-      <h1>My Reviews</h1>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "1rem",
+        }}
+      >
+        <h1 style={{ margin: 0 }}>My Reviews</h1>
+        <button
+          onClick={handleClearAll}
+          className="btn-ghost"
+          style={{
+            borderColor: "#e03131",
+            color: "#e03131",
+            padding: "0.5rem 0.9rem",
+            borderWidth: "1px",
+            borderStyle: "solid",
+            borderRadius: "8px",
+            cursor: books.length ? "pointer" : "not-allowed",
+            opacity: books.length ? 1 : 0.6,
+          }}
+          disabled={!books.length}
+          aria-disabled={!books.length}
+          title={books.length ? "Clear all reviews" : "No reviews to clear"}
+        >
+          Clear all reviews
+        </button>
+      </div>
+
       {books.length === 0 ? (
         <p style={{ marginTop: "2rem", color: "#888" }}>
           You haven't reviewed any books yet. Click Review on a book to add your

@@ -164,3 +164,41 @@ export function deleteReview(bookId, reviewId) {
     return false;
   }
 }
+
+/**
+ * Clear all reviews by a specific user across all books.
+ * Also dispatches reviews:updated for each affected book so UI can refresh stats.
+ * @param {string} userName - The user's name
+ * @returns {{removed:number, affectedBookIds:Array<string>}} Summary of deletions
+ */
+export function clearReviewsByUser(userName) {
+  const summary = { removed: 0, affectedBookIds: [] };
+  if (!userName) return summary;
+  try {
+    const allReviews = getAllReviews();
+    let changed = false;
+    for (const bookId of Object.keys(allReviews)) {
+      const before = allReviews[bookId] || [];
+      const after = before.filter((r) => r.userName !== userName);
+      const removedCount = before.length - after.length;
+      if (removedCount > 0) {
+        allReviews[bookId] = after;
+        summary.removed += removedCount;
+        summary.affectedBookIds.push(bookId);
+        changed = true;
+      }
+    }
+    if (changed) {
+      localStorage.setItem(REVIEWS_KEY, JSON.stringify(allReviews));
+      // Dispatch individual events so listening BookCards recalc
+      for (const bookId of summary.affectedBookIds) {
+        window.dispatchEvent(
+          new CustomEvent("reviews:updated", { detail: { bookId } })
+        );
+      }
+    }
+  } catch (e) {
+    console.error("Error clearing reviews by user:", e);
+  }
+  return summary;
+}
