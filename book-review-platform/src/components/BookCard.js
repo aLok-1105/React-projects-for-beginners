@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Star, Heart, MessageCircle, Bookmark } from "lucide-react";
+import { Star, Heart, Bookmark, MessageCircle } from "lucide-react";
 import { saveBook, unsaveBook, isBookSaved } from "../utils/savedBooks";
 import { getBookStats, addReview, getUserReview } from "../utils/reviews";
 import { getUser } from "../utils/auth";
-import { ReviewModal } from "./ReviewModal";
 
 export const BookCard = ({
   id,
@@ -25,7 +24,6 @@ export const BookCard = ({
   const [rating, setRating] = useState(initialRating || 0);
   const [reviewCount, setReviewCount] = useState(initialReviewCount || 0);
   const [hoverRating, setHoverRating] = useState(0);
-  const [showReviewModal, setShowReviewModal] = useState(false);
   const descriptionText = description ?? review;
 
   // Initialize isSaved from localStorage and load real-time ratings
@@ -109,10 +107,6 @@ export const BookCard = ({
     }
   };
 
-  const handleReviewClick = () => {
-    setShowReviewModal(true);
-  };
-
   return (
     <div className="book-card-modern">
       <div className="book-card-content">
@@ -183,10 +177,6 @@ export const BookCard = ({
           <Heart className={`action-icon ${isLiked ? "filled" : ""}`} />
           <span>Like</span>
         </button>
-        <button className="action-button" onClick={handleReviewClick}>
-          <MessageCircle className="action-icon" />
-          <span>Review</span>
-        </button>
         <button
           className={`action-button save-button ${isSaved ? "saved" : ""}`}
           onClick={handleSaveClick}
@@ -195,15 +185,6 @@ export const BookCard = ({
           <Bookmark className={`action-icon ${isSaved ? "filled" : ""}`} />
         </button>
       </div>
-
-      {/* Review Modal */}
-      {showReviewModal && (
-        <ReviewModal
-          bookId={id}
-          bookTitle={title}
-          onClose={() => setShowReviewModal(false)}
-        />
-      )}
 
       {/* Reviewer / Placeholder - Below Actions */}
       <div className="reviewer-section">
