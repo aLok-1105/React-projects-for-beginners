@@ -325,15 +325,54 @@ export const BookCard = ({
             onClick={handleReviewClick}
             style={{ cursor: "pointer" }}
           >
-            <div className="review-input-mock">
-              <MessageCircle className="review-input-icon" />
-              <span className="review-input-text">
-                {reviewText
-                  ? `You reviewed: "${reviewText.substring(0, 50)}${
-                      reviewText.length > 50 ? "..." : ""
-                    }"`
-                  : "Be the first to review..."}
-              </span>
+            <div
+              className="review-input-mock"
+              style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
+            >
+              {(() => {
+                const user = getUser();
+                if (user && reviewText) {
+                  return (
+                    <>
+                      <img
+                        src={
+                          user.avatarUrl ||
+                          "https://ui-avatars.com/api/?name=" +
+                            encodeURIComponent(user.name)
+                        }
+                        alt={user.name}
+                        className="reviewer-avatar"
+                        style={{
+                          width: "28px",
+                          height: "28px",
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                          background: "#e9ecef",
+                        }}
+                      />
+                      <span
+                        className="reviewer-name"
+                        style={{ fontWeight: 500, color: "#495057" }}
+                      >
+                        {user.name}
+                      </span>
+                      <span className="review-input-text">
+                        {reviewText.length > 50
+                          ? reviewText.substring(0, 50) + "..."
+                          : reviewText}
+                      </span>
+                    </>
+                  );
+                }
+                return (
+                  <>
+                    <MessageCircle className="review-input-icon" />
+                    <span className="review-input-text">
+                      Be the first to review...
+                    </span>
+                  </>
+                );
+              })()}
             </div>
           </div>
         )}
