@@ -106,20 +106,6 @@
   background: rgba(0, 0, 0, 0.1);
 }
 
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-}
-
-.user-profile:hover {
-  background: #6b9686;
-  color: #fdfffe;
-}
-
 .avatar {
   width: 2.5rem;
   height: 2.5rem;
@@ -150,17 +136,4 @@
 .user-info:hover {
   background: #6b9686;
   color: #fdfffe;
-}
-
-.user-name {
-  margin: 0;
-  font-weight: 500;
-  font-size: 0.875rem;
-  color: #ecf0f1;
-}
-
-.user-handle {
-  margin: 0;
-  font-size: 0.75rem;
-  color: rgba(236, 240, 241, 0.7);
 }
