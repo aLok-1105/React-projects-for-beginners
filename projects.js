@@ -802,6 +802,13 @@ const projects = [
     imgSrc: "assets/kastore-app.png",
     author: "KhataiAlizade",
   },
+  {
+    title: "Health Monitoring App",
+    url: "https://github.com/ianshulx/React-projects-for-beginners/tree/main-616/Health_Monitoring_App",
+    description:
+      "A responsive demo health monitoring dashboard built with React, Vite, and Tailwind CSS. It allows users to track steps, calories, and sleep",
+    imgSrc: "assets/HealthPulse.png",
+  },
 ];
 
 // Render all projects inside the container
