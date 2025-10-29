@@ -5,6 +5,7 @@
   --border-color-light: #ccc;
   --button-bg-light: #646cff;
 }
+
 [data-theme='light'] {
   --bg-color: var(--background-color-light);
   --text-color: var(--text-color-light);
@@ -12,6 +13,7 @@
   --border-color: var(--border-color-light);
   --button-bg: var(--button-bg-light);
 }
+
 [data-theme='dark'] {
   --bg-color: #242424;
   --text-color: #ffffff;
@@ -19,29 +21,34 @@
   --border-color: #555;
   --button-bg: #959cff;
 }
+
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
   transition: background-color 0.3s, color 0.3s;
 }
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
+
 header {
   margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .book-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
 }
+
 .book-card {
   border: 1px solid var(--border-color);
   background-color: var(--card-bg);
@@ -51,13 +58,16 @@ header {
   text-align: left;
   transition: border 0.3s, background-color 0.3s;
 }
+
 .book-card h2 {
   font-size: 1.2em;
   margin-bottom: 10px;
 }
+
 .book-card p {
   margin-bottom: 5px;
 }
+
 .book-card button {
   background-color: var(--button-bg);
   color: white;
@@ -67,6 +77,7 @@ header {
   cursor: pointer;
   border-radius: 4px;
 }
+
 .theme-toggle-button {
   background-color: var(--button-bg);
   color: white;
@@ -74,4 +85,12 @@ header {
   padding: 8px 15px;
   cursor: pointer;
   border-radius: 4px;
+}
+
+.book-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 20px;
+  transition: all 0.3s ease;
 }
