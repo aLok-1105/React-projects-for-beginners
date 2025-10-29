@@ -12,6 +12,8 @@ function App() {
   const [moves, setmoves] = useState(0);
   const [color , setcolor] = useState("#dd8e6f");
 
+  const [prevMove,setPrevMove] = useState([null,null])
+
   var initTable: number[][] = [
     [0, 0, 0],
     [0, 0, 0],
@@ -71,6 +73,7 @@ function App() {
   }
 
   function onSquareClick(row: number, col: number) {
+    setPrevMove([row,col])
     if(isHuman){
       initTable = tableArray;
       initTable[row][col] = turn;
@@ -109,24 +112,65 @@ function App() {
     if (moves == 9) {
       setgamerunning(false);
     }
-
-  
   }
+
+  function undo() {
+  if (prevMove[0] === null || prevMove[1] === null) {
+    alert("You haven’t made a move yet!");
+    return;
+  }
+
+  const newTable = tableArray.map(row => [...row]);
+
+  newTable[prevMove[0]][prevMove[1]] = 0;
+  setTableArray(newTable);
+
+  setturn(prev => (prev === 1 ? 2 : 1));
+  setcolor(prev => (prev === "#dd8e6f" ? "#3f7cab" : "#dd8e6f"));
+
+  // decrease move count
+  setmoves(prev => (prev > 0 ? prev - 1 : 0));
+
+  setgamerunning(true);
+
+  setPrevMove([null, null]);
+}
+
 
   return (
     <>
-      <div className="h-screen w-screen" style={{backgroundColor:color}}>
-        <div className="text-center p-5 text-xl">
-          <h1>Tic Tac Toe</h1>
-        </div>
+      <div
+        className="h-screen w-screen flex flex-col justify-start items-center p-5 transition-all duration-500"
+        style={{ backgroundColor: color }}
+      >
+        <h1 className="text-5xl font-extrabold text-white drop-shadow-lg tracking-wider mb-4">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 via-pink-300 to-orange-400 animate-pulse">
+            Tic Tac Toe
+          </span>
+        </h1>
 
-        {gamerunning == false && moves != 9 ? (
-          <h2 className="text-center p-2"> Winner is Player {winner}</h2>
-        ) : null}
+        {gamerunning === false && moves !== 9 && (
+          <h2 className="text-3xl font-bold text-white bg-black/30 px-6 py-2 rounded-2xl shadow-md mb-2 animate-bounce">
+            🏆 Player {winner} Wins!
+          </h2>
+        )}
 
-        {moves == 9 ? <h2 className="text-center p-2"> Draw</h2> : null}
+        {moves === 9 && (
+          <h2 className="text-3xl font-bold text-white bg-black/30 px-6 py-2 rounded-2xl shadow-md mb-2 animate-bounce">
+            🤝 It's a Draw!
+          </h2>
+        )}
 
-        <h2 className="text-center p-2">Turn: Player {turn}</h2>
+        <h2 className="text-2xl text-white mt-2 mb-5 font-semibold bg-black/20 px-5 py-1 rounded-lg shadow-sm">
+          🎮 Turn:{" "}
+          <span
+            className={`${
+              turn === 1 ? "text-orange-300" : "text-blue-300"
+            } font-bold`}
+          >
+            Player {turn}
+          </span>
+        </h2>
         <div className="tableWrapper flex  justify-center  ">
           <div className=" bg-white  flex flex-col justify-center">
             <div className="flex w-auto justify-center">
@@ -201,7 +245,30 @@ function App() {
           </div>
         </div>
 
-        <div className="flex justify-center p-5"><button title="Reset" onClick={()=>{Reset()}} className="flex justify-center">Reset</button></div>
+        <div className="flex justify-center mt-2 mb-2">
+          <button
+            disabled={!gamerunning || prevMove[0] === null}
+            onClick={undo}
+            className={`px-6 py-2 rounded-xl text-white font-semibold shadow-md transition-all duration-300 
+              ${
+                !gamerunning || prevMove[0] === null
+                  ? "bg-gray-600 cursor-not-allowed opacity-70"
+                  : "bg-gradient-to-r from-pink-500 to-orange-400 hover:scale-105 hover:shadow-lg hover:from-pink-400 hover:to-orange-300 active:scale-95"
+              }`}
+          >
+            🔙 Undo
+          </button>
+        </div>
+
+        <div className="flex justify-center">
+          <button
+            title="Reset"
+            onClick={Reset}
+            className="px-8 py-2 rounded-xl text-white font-semibold bg-gradient-to-r from-green-500 to-teal-400 hover:from-green-400 hover:to-teal-300 hover:scale-105 active:scale-95 transition-all duration-300 shadow-md"
+          >
+            ♻️ Reset Game
+          </button>
+        </div>
       </div>
     </>
   );
