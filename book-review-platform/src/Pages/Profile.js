@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUser, updateUser, clearUser } from "../utils/auth";
-import { getUserStats } from "../utils/stats";
+import { getReviewedBooksForUser } from "../utils/reviewedBooks";
 import { getSavedBooks } from "../utils/savedBooks";
 import "../styles/Profile.css";
 import { Heart, MessageSquareText } from "lucide-react";
@@ -58,29 +58,38 @@ const Profile = () => {
       email: u.email || "",
       avatarUrl: u.avatarUrl || "",
     });
-    
-    // Load stats and update with current saved books count
-    const currentStats = getUserStats();
-    const savedBooksCount = getSavedBooks().length;
-    setStats({
-      totalReviews: currentStats.totalReviews,
-      totalFavorites: savedBooksCount,
-    });
 
-    // Listen for savedBooks updates to refresh count
-    const handleSavedBooksUpdate = () => {
-      const updatedCount = getSavedBooks().length;
-      setStats(prev => ({ ...prev, totalFavorites: updatedCount }));
+    // Load stats and update with current saved books and reviews count
+    const updateStats = () => {
+      const savedBooksCount = getSavedBooks().length;
+      const reviewedBooksCount = getReviewedBooksForUser(u.name).length;
+      setStats({
+        totalReviews: reviewedBooksCount,
+        totalFavorites: savedBooksCount,
+      });
     };
+    updateStats();
 
+    // Listen for savedBooks and reviewedBooks updates to refresh counts
+    const handleSavedBooksUpdate = () => {
+      updateStats();
+    };
+    const handleReviewedBooksUpdate = () => {
+      updateStats();
+    };
     window.addEventListener("savedBooks:updated", handleSavedBooksUpdate);
-    return () => window.removeEventListener("savedBooks:updated", handleSavedBooksUpdate);
+    window.addEventListener("reviewedBooks:updated", handleReviewedBooksUpdate);
+    return () => {
+      window.removeEventListener("savedBooks:updated", handleSavedBooksUpdate);
+      window.removeEventListener(
+        "reviewedBooks:updated",
+        handleReviewedBooksUpdate
+      );
+    };
   }, [navigate]);
 
   const initials = useMemo(() => getInitials(user?.name), [user?.name]);
-
   if (!user) return null;
-
   return (
     <main className="profile-page">
       <div className="profile-header">

@@ -14,11 +14,17 @@ const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 export default function ClickComboGame() {
   const GAME_DURATION = 30; // seconds
-  const SPAWN_INTERVAL = 700; // ms
-  const TARGET_LIFESPAN = 1200; // ms
-
   const arenaRef = useRef(null);
   const spawnIntervalRef = useRef(null);
+
+  // 🔥 Added for difficulty
+  const [difficulty, setDifficulty] = useState("medium");
+  const DIFFICULTY_SETTINGS = {
+    easy: { spawnInterval: 900, targetLifespan: 1500 },
+    medium: { spawnInterval: 700, targetLifespan: 1200 },
+    hard: { spawnInterval: 500, targetLifespan: 900 },
+  };
+  const { spawnInterval, targetLifespan } = DIFFICULTY_SETTINGS[difficulty];
 
   const [running, setRunning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
@@ -41,7 +47,6 @@ export default function ClickComboGame() {
     return () => clearTimeout(t);
   }, [running, timeLeft]);
 
-  // Spawn targets while running
   useEffect(() => {
     if (!running) return;
 
@@ -64,20 +69,20 @@ export default function ClickComboGame() {
         setTargets((p) => p.filter((tt) => tt.id !== id));
         setCombo(0);
         setMisses((m) => m + 1);
-      }, TARGET_LIFESPAN + 50);
-    }, SPAWN_INTERVAL);
+      }, targetLifespan + 50); 
+    }, spawnInterval); 
 
     return () => clearInterval(spawnIntervalRef.current);
-  }, [running]);
+  }, [running, spawnInterval, targetLifespan]); 
 
   // clean up stale targets periodically
   useEffect(() => {
     const id = setInterval(() => {
       const now = Date.now();
-      setTargets((p) => p.filter((t) => now - t.created < TARGET_LIFESPAN + 200));
+      setTargets((p) => p.filter((t) => now - t.created < targetLifespan + 200)); 
     }, 900);
     return () => clearInterval(id);
-  }, []);
+  }, [targetLifespan]); 
 
   const handleStart = () => {
     setScore(0);
@@ -150,6 +155,12 @@ export default function ClickComboGame() {
                 <div className="text-right">
                   <div className="text-xs text-slate-400">Combo</div>
                   <div className="text-lg font-bold text-amber-300">{combo}×</div>
+                </div>
+
+                {/* 🔥 Show difficulty mode */}
+                <div className="text-right">
+                  <div className="text-xs text-slate-400">Mode</div>
+                  <div className="text-sm font-semibold capitalize">{difficulty}</div>
                 </div>
 
                 <div className="w-56">
@@ -237,7 +248,9 @@ export default function ClickComboGame() {
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="sticky top-6 rounded-xl p-6 bg-gradient-to-b from-white/6 to-white/4 border border-white/5 shadow-xl">
-            <h3 className="text-lg font-extrabold flex items-center gap-3">Results <span className="text-amber-300">🏆</span></h3>
+            <h3 className="text-lg font-extrabold flex items-center gap-3">
+              Results <span className="text-amber-300">🏆</span>
+            </h3>
             <p className="text-sm text-slate-300 mt-1">Live summary & best</p>
 
             <div className="mt-4 grid gap-3">
@@ -302,9 +315,29 @@ export default function ClickComboGame() {
               </div>
             </div>
 
-            <div className="mt-5">
+            {/* 🔥 Difficulty Selector */}
+            <div className="mt-5 space-y-3">
+              <div>
+                <label className="text-xs text-slate-400 block mb-1">Difficulty</label>
+                <select
+                  value={difficulty}
+                  onChange={(e) => setDifficulty(e.target.value)}
+                  disabled={running}
+                  className="w-full bg-slate-800 text-slate-200 border border-white/10 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                >
+                  <option value="easy">Easy 🐢</option>
+                  <option value="medium">Medium ⚡</option>
+                  <option value="hard">Hard 🔥</option>
+                </select>
+              </div>
+
               {!running ? (
-                <button onClick={handleStart} className="w-full px-4 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-violet-600 font-bold">Play Now</button>
+                <button
+                  onClick={handleStart}
+                  className="w-full px-4 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-violet-600 font-bold"
+                >
+                  Play Now
+                </button>
               ) : (
                 <div className="text-sm text-slate-300">Game is live — good luck!</div>
               )}

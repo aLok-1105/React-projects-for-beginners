@@ -22,7 +22,16 @@ const Saved = () => {
         background: "#f8f9fa",
       }}
     >
-      <h1>Saved</h1>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "1rem",
+        }}
+      >
+        <h1 style={{ margin: 0 }}>Saved</h1>
+      </div>
       {savedBooks.length === 0 ? (
         <p style={{ marginTop: "2rem", color: "#888" }}>
           You haven't saved any books yet. Click the bookmark icon on a book to
