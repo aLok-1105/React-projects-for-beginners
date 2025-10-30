@@ -1,8 +1,8 @@
 {
-  "name": "mood-journal",
+  "name": "soundboard-emotions",
   "version": "1.0.0",
   "private": true,
-  "description": "Mood Journal - React app to log moods with emoji analytics (no APIs).",
+  "description": "Soundboard of Emotions - React app with Web Audio API generated sounds (no external audio).",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -12,8 +12,7 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "recharts": "^2.6.2"
+    "react-scripts": "5.0.1"
   },
   "browserslist": [
     ">0.2%",
