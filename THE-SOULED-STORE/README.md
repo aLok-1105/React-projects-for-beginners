@@ -71,3 +71,27 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 
 ### Don't forget to add your fire base before starting the app
+
+### 🚀 Getting Started
+Before starting the app, make sure you’ve properly set up your Firebase credentials.
+
+
+## ⚙️ Environment Setup
+Create Environment File
+In the project root directory, create a new file named .env.
+Copy all variables from the provided .env.example file into your newly created .env file.
+Add Firebase Credentials
+Go to your Firebase Console.
+Copy your Firebase API keys and other configuration details.
+Paste them into the corresponding fields in the .env file.
+## 📦 Install Dependencies
+Run the following command in your terminal to install all required Node modules:
+`npm install`
+## ▶️ Run the Application
+After installing the dependencies, start the development server with:
+`npm run dev`
+Once started, open your browser and navigate to:
+[http://localhost:3000]
+## ✅ Notes
+Make sure your .env file is not committed to Git for security reasons.
+If you face Firebase-related errors, double-check that all credentials in your .env file are correct and linked to the proper Firebase project.
