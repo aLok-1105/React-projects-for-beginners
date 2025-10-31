@@ -19,7 +19,8 @@ const Saved = () => {
         padding: "2rem",
         marginLeft: "280px",
         minHeight: "100vh",
-        background: "#f8f9fa",
+        background: "var(--background)",
+        color: "var(--foreground)",
       }}
     >
       <div
@@ -30,10 +31,10 @@ const Saved = () => {
           gap: "1rem",
         }}
       >
-        <h1 style={{ margin: 0 }}>Saved</h1>
+        <h1 style={{ margin: 0, color: "var(--foreground)" }}>Saved</h1>
       </div>
       {savedBooks.length === 0 ? (
-        <p style={{ marginTop: "2rem", color: "#888" }}>
+        <p style={{ marginTop: "2rem", color: "var(--muted-foreground)" }}>
           You haven't saved any books yet. Click the bookmark icon on a book to
           save it!
         </p>

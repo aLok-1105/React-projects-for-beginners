@@ -102,7 +102,8 @@ const MyReview = () => {
         padding: "2rem",
         marginLeft: "280px",
         minHeight: "100vh",
-        background: "#f8f9fa",
+        background: "var(--background)",
+        color: "var(--foreground)",
       }}
     >
       <div
@@ -113,13 +114,14 @@ const MyReview = () => {
           gap: "1rem",
         }}
       >
-        <h1 style={{ margin: 0 }}>My Reviews</h1>
+        <h1 style={{ margin: 0, color: "var(--foreground)" }}>My Reviews</h1>
         <button
           onClick={handleClearAll}
           className="btn-ghost"
           style={{
-            borderColor: "#e03131",
-            color: "#e03131",
+            borderColor: "var(--destructive)",
+            color: "var(--destructive)",
+            backgroundColor: "transparent",
             padding: "0.5rem 0.9rem",
             borderWidth: "1px",
             borderStyle: "solid",
@@ -136,7 +138,7 @@ const MyReview = () => {
       </div>
 
       {books.length === 0 ? (
-        <p style={{ marginTop: "2rem", color: "#888" }}>
+        <p style={{ marginTop: "2rem", color: "var(--muted-foreground)" }}>
           You haven't reviewed any books yet. Click Review on a book to add your
           rating and text.
         </p>

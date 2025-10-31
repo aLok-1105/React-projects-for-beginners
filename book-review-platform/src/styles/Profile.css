@@ -4,6 +4,8 @@
   padding: 2rem 1.5rem;
   width: 100%;
   box-sizing: border-box;
+  background: var(--background);
+  color: var(--foreground);
 }
 
 .profile-section {
@@ -23,20 +25,21 @@
   max-width: 935px;
   margin: 0 auto;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #dbdbdb;
+  border-bottom: 1px solid var(--border);
 }
 
 .profile-avatar {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  color: #262626;
-  border: 1px solid #dbdbdb;
+  color: var(--foreground);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 2rem;
+  background: var(--card);
 }
 
 .profile-avatar-image {
@@ -57,7 +60,7 @@
 
 .profile-name {
   margin: 0 0 0.25rem 0;
-  color: #262626;
+  color: var(--foreground);
   font-weight: 600;
   font-size: 1.25rem;
 }
@@ -69,13 +72,13 @@
 
 .profile-username {
   margin: 0;
-  color: #8e8e8e;
+  color: var(--muted-foreground);
   font-size: 0.95rem;
 }
 
 .profile-subtle {
   margin: 0.25rem 0 0 0;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 0.85rem;
 }
 
@@ -99,21 +102,21 @@
 }
 
 .info-card {
-  background: #ffffff;
-  border: 1px solid #e9ecef;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1rem 1.25rem;
 }
 
 .info-label {
   margin: 0;
-  color: #6c757d;
+  color: var(--muted-foreground);
   font-size: 0.825rem;
 }
 
 .info-value {
   margin: 0.25rem 0 0 0;
-  color: #2c3e50;
+  color: var(--card-foreground);
   font-weight: 600;
 }
 
@@ -125,8 +128,8 @@
 }
 
 .stat-card {
-  background: #ffffff;
-  border: 1px solid #e9ecef;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
@@ -136,38 +139,40 @@
 }
 
 .stat-card:hover {
-  border-color: #7ba89a;
+  border-color: var(--primary);
 }
 
 .btn {
   appearance: none;
-  border: 1px solid #dbdbdb;
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0.4rem 0.9rem;
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  background: #fafafa;
-  color: #262626;
+  background: var(--secondary);
+  color: var(--secondary-foreground);
 }
 
 .btn-primary {
-  background: #fafafa;
-  color: #262626;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
 }
 
 .btn-primary:hover {
-  background: #f0f0f0;
+  background: var(--primary);
+  opacity: 0.9;
 }
 
 .btn-ghost {
-  background: #fafafa;
-  color: #262626;
-  border: 1px solid #dbdbdb;
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  border: 1px solid var(--border);
 }
 
 .btn-ghost:hover {
-  background: #f0f0f0;
+  background: var(--muted);
 }
 
 .form-grid {
@@ -184,22 +189,23 @@
 }
 
 .form-label {
-  color: #2c3e50;
+  color: var(--foreground);
   font-size: 0.9rem;
 }
 
 .form-input {
   padding: 0.6rem 0.8rem;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 0.95rem;
-  background: #f8f9fa;
+  background: var(--input-background);
+  color: var(--foreground);
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #7ba89a;
-  background: #ffffff;
+  border-color: var(--primary);
+  background: var(--card);
 }
 
 .form-actions {
@@ -208,7 +214,7 @@
 
 .section-title {
   margin: 0 0 0.25rem 0;
-  color: #1a3a2e;
+  color: var(--foreground);
   font-size: 1.1rem;
 }
 
@@ -232,12 +238,12 @@
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background: #f0f8f5;
+  background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #7ba89a;
+  color: var(--primary);
 }
 
 .stat-content {
@@ -248,13 +254,13 @@
 }
 
 .stat-label {
-  color: #6c757d;
+  color: var(--muted-foreground);
   font-size: 0.875rem;
   font-weight: 500;
 }
 
 .stat-value {
-  color: #2c3e50;
+  color: var(--card-foreground);
   font-weight: 600;
   font-size: 1.5rem;
   line-height: 1.2;

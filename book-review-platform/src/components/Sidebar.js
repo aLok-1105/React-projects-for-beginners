@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/Sidebar.css";
-import { Home, Bookmark, BookOpen, User } from "lucide-react";
+import { Home, Bookmark, BookOpen, User, Sun } from "lucide-react";
 import { getUser } from "../utils/auth";
 
 const navItems = [
@@ -10,7 +10,7 @@ const navItems = [
   { icon: User, label: "My Reviews", path: "/myreview" },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ currentPage, onNavigate, isDarkMode, onToggleDarkMode }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [userData, setUserData] = useState(null);
@@ -38,6 +38,7 @@ const Sidebar = () => {
 
   function handleClick(item) {
     navigate(item.path);
+    if (typeof onNavigate === "function") onNavigate(item.label);
   }
 
   return (
@@ -68,6 +69,43 @@ const Sidebar = () => {
               </li>
             );
           })}
+
+          {/* Dark Mode Toggle as Navigation Item */}
+          <li className="nav-item">
+            <div
+              className="nav-link toggle-container"
+              onClick={() => {
+                if (typeof onToggleDarkMode === "function") onToggleDarkMode();
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  if (typeof onToggleDarkMode === "function")
+                    onToggleDarkMode();
+                }
+              }}
+              aria-label="Toggle theme"
+            >
+              <div className="toggle-content">
+                <Sun className="nav-icon" />
+                <span className="nav-label">
+                  {isDarkMode ? "Dark Mode" : "Light Mode"}
+                </span>
+              </div>
+              <div className="toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={isDarkMode}
+                  onChange={() => {}}
+                  className="toggle-input"
+                  tabIndex={-1}
+                />
+                <div className="toggle-slider"></div>
+              </div>
+            </div>
+          </li>
         </ul>
       </nav>
 
