@@ -7,6 +7,7 @@ import { useState } from "react"
 import Navbar from "./landing page/Navbar";
 import Footer from "./landing page/Footer";
 import Modal from "./components/Modal";
+import Category from "./pages/Category.jsx";
 
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/category/:slug" element={<Category />} />
       </Routes>
 
       <Footer />

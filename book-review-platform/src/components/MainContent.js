@@ -17,8 +17,8 @@ const sampleBooks = [
     author: "F. Scott Fitzgerald",
     cover:
       "https://books.google.com/books/content?id=iJZYAAAAMAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
-    rating: 4.5,
-    reviewCount: 234,
+    rating: 0,
+    reviewCount: 0,
     genre: "Classic Literature",
     review:
       "A masterpiece of American literature. Fitzgerald's prose is beautiful and the story of Jay Gatsby is both tragic and captivating. The themes of love, wealth, and the American Dream are expertly woven throughout.",
@@ -33,8 +33,8 @@ const sampleBooks = [
     author: "Harper Lee",
     cover:
       "https://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
-    rating: 5,
-    reviewCount: 189,
+    rating: 0,
+    reviewCount: 0,
     genre: "Fiction",
     review:
       "An incredible story about justice, morality, and growing up in the American South. Scout's perspective is both innocent and profound. This book tackles difficult subjects with grace and power.",
@@ -49,8 +49,8 @@ const sampleBooks = [
     author: "George Orwell",
     cover:
       "https://books.google.com/books/content?id=kotPYEqx7kMC&printsec=frontcover&img=1&zoom=1&source=gbs_api",
-    rating: 4.8,
-    reviewCount: 312,
+    rating: 0,
+    reviewCount: 0,
     genre: "Dystopian",
     review:
       "A chilling dystopian novel that feels more relevant than ever. Orwell's vision of a totalitarian society is both terrifying and thought-provoking. The concepts of Big Brother and doublethink are unforgettable.",
@@ -67,28 +67,49 @@ const MainContent = () => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [route, setRoute] = useState("home");
 
-  // Fetch featured books on component mount
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
+    const onNavigate = (e) => {
+      const r = e?.detail?.route || "404";
+      if (r === "home") {
+        // refresh: re-run fetch
+        setRoute("home");
         setLoading(true);
-        setError(null);
-        const response = await getFeaturedBooks(12);
-        const transformedBooks = transformGoogleBooksResponse(response);
-        const booksWithReviews = transformedBooks.map(addMockReviewData);
-        setBooks(booksWithReviews);
-      } catch (err) {
-        setError("Failed to fetch books. Please try again later.");
-        console.error("Error fetching books:", err);
-        // Fallback to sample data if API fails
-        setBooks(sampleBooks);
-      } finally {
-        setLoading(false);
+        // trigger fetch by calling the same fetch logic - we'll reuse effect by toggling a dummy state
+        // simplest approach: call the fetchBooks function directly here via a small helper
+        fetchBooksHelper();
+      } else {
+        setRoute("404");
       }
     };
 
-    fetchBooks();
+    window.addEventListener("app:navigate", onNavigate);
+    return () => window.removeEventListener("app:navigate", onNavigate);
+  }, []);
+
+  // Fetch featured books on component mount
+  // we'll expose a fetch helper so nav can trigger refresh directly
+  const fetchBooksHelper = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await getFeaturedBooks(12);
+      const transformedBooks = transformGoogleBooksResponse(response);
+      const booksWithReviews = transformedBooks.map(addMockReviewData);
+      setBooks(booksWithReviews);
+    } catch (err) {
+      setError("Failed to fetch books. Please try again later.");
+      console.error("Error fetching books:", err);
+      // Fallback to sample data if API fails
+      setBooks(sampleBooks);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBooksHelper();
   }, []);
 
   // Handle search functionality
@@ -137,6 +158,26 @@ const MainContent = () => {
       </div>
     );
   }
+  if (route === "404") {
+    return (
+      <div className="main-content">
+        <SearchBar />
+        <header className="content-header">
+          <h1>Page Not Found</h1>
+          <p>The section you selected hasn't been implemented yet.</p>
+        </header>
+        <div className="reviews-container">
+          <div className="notfound-404">
+            <h2>404</h2>
+            <p>
+              This section is coming soon. Use the Home icon to refresh or
+              return.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="main-content">
@@ -168,6 +209,7 @@ const MainContent = () => {
         {books.map((book) => (
           <BookCard
             key={book.id}
+            id={book.id}
             title={book.title}
             author={book.author}
             cover={book.cover}
@@ -175,44 +217,11 @@ const MainContent = () => {
             reviewCount={book.reviewCount}
             genre={book.genre}
             review={book.review}
+            description={book.description}
             reviewer={book.reviewer}
             reviewerAvatar={book.reviewerAvatar}
           />
         ))}
-      </div>
-
-      {/* Add more content to demonstrate scrolling */}
-      <div className="content-section">
-        <h2>Featured Books</h2>
-        <div className="featured-books">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="book-card">
-              <div className="book-cover">📖</div>
-              <h4>Featured Book {i}</h4>
-              <p>Author Name</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="content-section">
-        <h2>Popular Authors</h2>
-        <div className="authors-grid">
-          {[
-            "Jane Austen",
-            "George Orwell",
-            "Harper Lee",
-            "F. Scott Fitzgerald",
-            "J.D. Salinger",
-            "Charles Dickens",
-          ].map((author) => (
-            <div key={author} className="author-card">
-              <div className="author-avatar">👤</div>
-              <h4>{author}</h4>
-              <p>Author</p>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

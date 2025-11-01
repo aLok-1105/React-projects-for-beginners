@@ -3,81 +3,69 @@ import { logo } from "../assets";
 import { footerLinks, socialMedia } from "../constants";
 
 const Footer = () => (
-  <footer className={`${styles.flexCenter} ${styles.paddingY} flex-col`}>
-    <div className={`${styles.flexStart} md:flex-row flex-col mb-8 w-full`}>
-      <div className="flex-[1] flex flex-col justify-start mr-10">
+  <footer className={`${styles.flexCenter} ${styles.paddingY} flex-col bg-black`}>
+    {/* Top section: Logo + links */}
+    <div className={`${styles.flexStart} md:flex-row flex-col mb-8 w-full max-w-7xl`}>
+      {/* Logo + Description */}
+      <div className="flex-[1] flex flex-col justify-start mr-10 mb-8 md:mb-0">
         <img
           src={logo}
-          alt="HooBank logo"
-          className="w-[266px] h-[72.14px] object-contain"
+          alt="HooBank Logo"
+          className="w-[266px] h-[72px] object-contain mb-4"
         />
-        <p className={`${styles.paragraph} mt-4 max-w-[312px]`}>
+        <p className={`${styles.paragraph} mt-4 max-w-[312px] text-gray-400`}>
           A new way to make the payments easy, reliable and secure.
         </p>
       </div>
 
-      <nav
-        aria-labelledby="footer-navigation"
-        className="flex-[1.5] w-full flex flex-row justify-between flex-wrap md:mt-0 mt-10"
-      >
-        <h2 id="footer-navigation" className="sr-only">
-          Footer navigation
-        </h2>
-
-        {footerLinks.map((footerlink, colIndex) => (
-          <section
+      {/* Footer Links */}
+      <div className="flex-[1.5] w-full flex flex-wrap justify-between">
+        {footerLinks.map((footerlink) => (
+          <div
             key={footerlink.title}
-            aria-labelledby={`footer-heading-${colIndex}`}
             className="flex flex-col ss:my-0 my-4 min-w-[150px]"
           >
-            <h3
-              id={`footer-heading-${colIndex}`}
-              className="font-poppins font-medium text-[18px] leading-[27px] text-white"
-            >
+            <h3 className="font-poppins font-medium text-[18px] leading-[27px] text-white mb-4">
               {footerlink.title}
             </h3>
-
-            <ul className="list-none mt-4">
-              {footerlink.links.map((link, index) => (
-                <li
-                  key={link.name}
-                  className={`${index !== footerlink.links.length - 1 ? "mb-4" : "mb-0"}`}
-                >
+            <ul className="list-none flex flex-col gap-3">
+              {footerlink.links.map((link) => (
+                <li key={link.name}>
                   <a
                     href={link.link || "#"}
-                    className="font-poppins font-normal text-[16px] leading-[24px] text-dimWhite hover:text-secondary"
+                    className="font-poppins font-normal text-[16px] leading-[24px] text-gray-400 hover:text-blue-500 transition-colors duration-300"
                     target={link.link ? "_blank" : "_self"}
                     rel={link.link ? "noopener noreferrer" : undefined}
-                    aria-label={`Link to ${link.name}`}
                   >
                     {link.name}
                   </a>
                 </li>
               ))}
             </ul>
-          </section>
+          </div>
         ))}
-      </nav>
+      </div>
     </div>
 
-    <div className="w-full flex justify-between items-center md:flex-row flex-col pt-6 border-t-[1px] border-t-[#3F3E45]">
-      <p className="font-poppins font-normal text-center text-[18px] leading-[27px] text-white">
+    {/* Bottom section: Copyright + Social Media */}
+    <div className="w-full flex flex-col md:flex-row justify-between items-center border-t border-gray-700 pt-6">
+      <p className="font-poppins font-normal text-[16px] text-gray-400 text-center md:text-left mb-4 md:mb-0">
         Copyright Ⓒ {new Date().getFullYear()} HooBank. All Rights Reserved.
       </p>
 
-      <ul className="flex flex-row md:mt-0 mt-6" aria-label="Social media links">
-        {socialMedia.map((social, index) => (
-          <li key={social.id} className={`${index !== socialMedia.length - 1 ? "mr-6" : "mr-0"}`}>
+      <ul className="flex flex-row space-x-6">
+        {socialMedia.map((social) => (
+          <li key={social.id}>
             <a
               href={social.link || "#"}
               target={social.link ? "_blank" : "_self"}
               rel={social.link ? "noopener noreferrer" : undefined}
-              aria-label={`Link to ${social.id} profile`}
+              className="transition-transform transform hover:scale-110"
             >
               <img
                 src={social.icon}
                 alt={`${social.id} icon`}
-                className="w-[21px] h-[21px] object-contain cursor-pointer"
+                className="w-5 h-5 object-contain"
               />
             </a>
           </li>

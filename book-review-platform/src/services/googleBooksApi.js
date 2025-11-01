@@ -1,7 +1,6 @@
 const GOOGLE_BOOKS_API_BASE = "https://www.googleapis.com/books/v1/volumes";
 
 /**
- * Search for books using Google Books API
  * @param {string} query - Search query
  * @param {number} maxResults - Maximum number of results (default: 20)
  * @param {number} startIndex - Starting index for pagination (default: 0)
@@ -78,8 +77,8 @@ export const transformGoogleBook = (googleBook) => {
       imageLinks.thumbnail ||
       imageLinks.smallThumbnail ||
       "/placeholder-book.jpg",
-    rating: volumeInfo.averageRating || 0,
-    reviewCount: volumeInfo.ratingsCount || 0,
+    rating: 0, // Start with 0, will be calculated from platform reviews
+    reviewCount: 0, // Start with 0, will be counted from platform reviews
     genre: volumeInfo.categories ? volumeInfo.categories[0] : "General",
     description: volumeInfo.description || "No description available.",
     publishedDate: volumeInfo.publishedDate || "",

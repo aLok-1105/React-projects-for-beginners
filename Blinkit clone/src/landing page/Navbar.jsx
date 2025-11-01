@@ -17,12 +17,12 @@ export default function Navbar({ handleModalOpen }) {
             <div className="nav-container justify-between flex border-b items-center px-6 fixed bg-white w-full top-0 z-10 h-20">
 
             <NavLink to="/">
-            <div className="h-full border-r items-center flex hover:bg-slate-100 pr-4">
+            <div className="h-full border-r items-center flex pr-4">
                     <Logo />
                 </div>
             </NavLink>
                 
-                <div className="item-container flex hover:bg-slate-100 gap-6 px-4 flex-grow">
+                <div className="item-container flex gap-6 px-4 flex-grow">
                     <div className="delivery text-xs">
                         <h1 className='font-bold'>Deliver in 8 minutes</h1>
                         <p className='w-45'>B62, Pocket B, South City I, Sector...<ArrowDropDownIcon /> </p>

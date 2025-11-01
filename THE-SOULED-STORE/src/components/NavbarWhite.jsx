@@ -22,7 +22,7 @@ function NavbarWhite() {
 
   return (
     <div className="navbar">
-      <a href="/"><img alt="souledstorelogo" className='img' src='https://www.thesouledstore.com/static/img/newlogo.8dcc6cc.png'/></a>
+      <a href="/"><img alt="souledstorelogo" className='img' src='https://prod-img.thesouledstore.com/static/non-member-logo2.gif?w=100&dpr=2'/></a>
       
       {/* Hamburger Menu for Mobile */}
       <div className="hamburger" onClick={toggleMenu}>

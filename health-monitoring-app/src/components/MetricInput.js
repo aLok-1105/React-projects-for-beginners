@@ -151,7 +151,7 @@ function MetricInput({ healthData, updateMetric }) {
         </div>
       ))}
 
-      <div className="card" style={{ textAlign: 'center', background: '#e8f5e8' }}>
+      <div className="card tips-card" style={{ textAlign: 'center' }}>
         <h3>💡 Tips for Better Health Tracking</h3>
         <ul style={{ textAlign: 'left', maxWidth: '600px', margin: '0 auto' }}>
           <li>🕐 Update your metrics at the same time each day for consistency</li>

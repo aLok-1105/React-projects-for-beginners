@@ -1,9 +1,10 @@
 import styles from "./style";
 import { Billing, Business, CardDeal, Clients, CTA, Footer, Navbar, Stats, Testimonials, Hero } from "./components";
+import BackToTop from "./components/BackToTop";
 
 const App = () => (
   <div className="bg-primary w-full overflow-hidden">
-    <div className={`${styles.paddingX} ${styles.flexCenter}`}>
+    <div className={`${styles.flexCenter}`}>
       <div className={`${styles.boxWidth}`}>
         <Navbar />
       </div>
@@ -25,6 +26,7 @@ const App = () => (
         <Clients />
         <CTA />
         <Footer />
+        <BackToTop/>
       </div>
     </div>
   </div>
