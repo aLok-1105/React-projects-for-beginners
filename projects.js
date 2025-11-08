@@ -1,5 +1,12 @@
 // Please add your project details in the below array.
 const projects = [
+    {
+    title: "digital_clock",
+    url: "https://github.com/IshikaSinghRajput/React-projects-for-beginners.git",
+    description:
+      "A simple and elegant Digital Clock built using React.js.This project displays the current time (updated every second) and the current date, with a beautiful glowing dark theme.",
+    imgSrc: "assets\Digital_Clock.png",
+  },
   {
     title: "Google NotebookLM Clone",
     url: "https://github.com/anirudh7065/Google-NotebookLM-Clone",
