@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import { useJournal, JournalEntry } from '@/contexts/JournalContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { MoodPicker } from './MoodPicker';
-import { TagInput } from './TagInput';
-import { toast } from 'sonner';
+import { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import { useJournal, JournalEntry } from "@/contexts/JournalContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { MoodPicker } from "./MoodPicker";
+import { TagInput } from "./TagInput";
+import { toast } from "sonner";
 
 interface EntryEditorProps {
   entry?: JournalEntry | null;
@@ -15,11 +15,11 @@ interface EntryEditorProps {
 
 export const EntryEditor = ({ entry, onClose }: EntryEditorProps) => {
   const { addEntry, updateEntry } = useJournal();
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [mood, setMood] = useState('happy');
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [mood, setMood] = useState("happy");
   const [tags, setTags] = useState<string[]>([]);
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
   useEffect(() => {
     if (entry) {
@@ -27,15 +27,15 @@ export const EntryEditor = ({ entry, onClose }: EntryEditorProps) => {
       setContent(entry.content);
       setMood(entry.mood);
       setTags(entry.tags);
-      setDate(new Date(entry.date).toISOString().split('T')[0]);
+      setDate(new Date(entry.date).toISOString().split("T")[0]);
     }
   }, [entry]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!title.trim() || !content.trim()) {
-      toast.error('Please fill in both title and content');
+      toast.error("Please fill in both title and content");
       return;
     }
 
@@ -45,14 +45,15 @@ export const EntryEditor = ({ entry, onClose }: EntryEditorProps) => {
       mood,
       tags,
       date: new Date(date),
+      aiSummary: undefined, // Clear the AI summary when entry is updated
     };
 
     if (entry) {
       updateEntry(entry.id, entryData);
-      toast.success('Entry updated successfully!');
+      toast.success("Entry updated successfully!");
     } else {
       addEntry(entryData);
-      toast.success('Entry created successfully!');
+      toast.success("Entry created successfully!");
     }
 
     onClose();
@@ -63,7 +64,7 @@ export const EntryEditor = ({ entry, onClose }: EntryEditorProps) => {
       <div className="bg-card rounded-xl shadow-elevated max-w-3xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-auto animate-scale-in">
         <div className="sticky top-0 bg-card border-b border-border p-4 sm:p-6 flex items-center justify-between">
           <h2 className="text-xl sm:text-2xl font-bold text-primary">
-            {entry ? 'Edit Entry' : 'New Entry'}
+            {entry ? "Edit Entry" : "New Entry"}
           </h2>
           <Button
             variant="ghost"
@@ -75,11 +76,12 @@ export const EntryEditor = ({ entry, onClose }: EntryEditorProps) => {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="p-4 sm:p-6 space-y-4 sm:space-y-6"
+        >
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">
-              Date
-            </label>
+            <label className="text-sm font-medium text-foreground">Date</label>
             <Input
               type="date"
               value={date}
@@ -89,9 +91,7 @@ export const EntryEditor = ({ entry, onClose }: EntryEditorProps) => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">
-              Title
-            </label>
+            <label className="text-sm font-medium text-foreground">Title</label>
             <Input
               type="text"
               placeholder="What's on your mind?"
@@ -122,7 +122,7 @@ export const EntryEditor = ({ entry, onClose }: EntryEditorProps) => {
               type="submit"
               className="flex-1 bg-gradient-to-r from-primary to-primary-glow hover:opacity-90"
             >
-              {entry ? 'Update Entry' : 'Save Entry'}
+              {entry ? "Update Entry" : "Save Entry"}
             </Button>
             <Button
               type="button"

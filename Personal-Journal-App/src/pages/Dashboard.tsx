@@ -1,31 +1,38 @@
-import { useState } from 'react';
-import { useJournal } from '@/contexts/JournalContext';
-import { EntryCard } from '@/components/journal/EntryCard';
-import { EntryEditor } from '@/components/journal/EntryEditor';
-import { FloatingActionButton } from '@/components/journal/FloatingActionButton';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, Calendar as CalendarIcon, Tag, TrendingUp } from 'lucide-react';
-import { format, startOfMonth, endOfMonth } from 'date-fns';
+import { useState } from "react";
+import { useJournal, JournalEntry } from "@/contexts/JournalContext";
+import { EntryCard } from "@/components/journal/EntryCard";
+import { EntryEditor } from "@/components/journal/EntryEditor";
+import { FloatingActionButton } from "@/components/journal/FloatingActionButton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  BookOpen,
+  Calendar as CalendarIcon,
+  Tag,
+  TrendingUp,
+} from "lucide-react";
+import { format, startOfMonth, endOfMonth } from "date-fns";
 
 export default function Dashboard() {
   const { entries, deleteEntry } = useJournal();
-  const [editingEntry, setEditingEntry] = useState(null);
+  const [editingEntry, setEditingEntry] = useState<JournalEntry | null>(null);
   const [showEditor, setShowEditor] = useState(false);
 
   const recentEntries = entries.slice(0, 3);
-  const thisMonthEntries = entries.filter(entry => {
+  const thisMonthEntries = entries.filter((entry) => {
     const entryDate = new Date(entry.date);
     const now = new Date();
     return entryDate >= startOfMonth(now) && entryDate <= endOfMonth(now);
   });
 
-  const allTags = Array.from(new Set(entries.flatMap(entry => entry.tags)));
+  const allTags = Array.from(new Set(entries.flatMap((entry) => entry.tags)));
   const moodCounts = entries.reduce((acc, entry) => {
     acc[entry.mood] = (acc[entry.mood] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
-  const mostFrequentMood = Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0];
+  const mostFrequentMood = Object.entries(moodCounts).sort(
+    (a, b) => b[1] - a[1]
+  )[0];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20">
@@ -36,7 +43,7 @@ export default function Dashboard() {
               Welcome Back
             </h1>
             <p className="text-sm md:text-base text-muted-foreground">
-              {format(new Date(), 'EEEE, MMMM d, yyyy')}
+              {format(new Date(), "EEEE, MMMM d, yyyy")}
             </p>
           </div>
         </div>
@@ -50,7 +57,9 @@ export default function Dashboard() {
               <BookOpen className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-foreground">{entries.length}</div>
+              <div className="text-3xl font-bold text-foreground">
+                {entries.length}
+              </div>
             </CardContent>
           </Card>
 
@@ -62,7 +71,9 @@ export default function Dashboard() {
               <CalendarIcon className="h-4 w-4 text-accent" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-foreground">{thisMonthEntries.length}</div>
+              <div className="text-3xl font-bold text-foreground">
+                {thisMonthEntries.length}
+              </div>
             </CardContent>
           </Card>
 
@@ -74,7 +85,9 @@ export default function Dashboard() {
               <Tag className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-foreground">{allTags.length}</div>
+              <div className="text-3xl font-bold text-foreground">
+                {allTags.length}
+              </div>
             </CardContent>
           </Card>
 
@@ -87,17 +100,19 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-foreground capitalize">
-                {mostFrequentMood ? mostFrequentMood[0] : 'N/A'}
+                {mostFrequentMood ? mostFrequentMood[0] : "N/A"}
               </div>
             </CardContent>
           </Card>
         </div>
 
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-foreground">Recent Entries</h2>
+          <h2 className="text-2xl font-bold mb-6 text-foreground">
+            Recent Entries
+          </h2>
           {recentEntries.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {recentEntries.map(entry => (
+              {recentEntries.map((entry) => (
                 <EntryCard
                   key={entry.id}
                   entry={entry}
@@ -111,16 +126,20 @@ export default function Dashboard() {
             </div>
           ) : (
             <Card className="p-12 text-center bg-gradient-to-br from-card to-card/80">
-              <p className="text-muted-foreground mb-4">No entries yet. Start writing!</p>
+              <p className="text-muted-foreground mb-4">
+                No entries yet. Start writing!
+              </p>
             </Card>
           )}
         </div>
       </div>
 
-      <FloatingActionButton onClick={() => {
-        setEditingEntry(null);
-        setShowEditor(true);
-      }} />
+      <FloatingActionButton
+        onClick={() => {
+          setEditingEntry(null);
+          setShowEditor(true);
+        }}
+      />
 
       {showEditor && (
         <EntryEditor
