@@ -1,9 +1,11 @@
-import { format } from 'date-fns';
-import { Calendar, Tag, Trash2, Edit } from 'lucide-react';
-import { JournalEntry } from '@/contexts/JournalContext';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { format } from "date-fns";
+import { Calendar, Tag, Trash2, Edit, Sparkles, Loader2 } from "lucide-react";
+import { JournalEntry, useJournal } from "@/contexts/JournalContext";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface EntryCardProps {
   entry: JournalEntry;
@@ -12,27 +14,42 @@ interface EntryCardProps {
 }
 
 const moodEmojis: Record<string, string> = {
-  happy: '😊',
-  calm: '😌',
-  sad: '😔',
-  frustrated: '😤',
-  tired: '😴',
-  grateful: '🤗',
-  anxious: '😰',
-  excited: '🤩',
+  happy: "😊",
+  calm: "😌",
+  sad: "😔",
+  frustrated: "😤",
+  tired: "😴",
+  grateful: "🤗",
+  anxious: "😰",
+  excited: "🤩",
 };
 
 const tagColors = [
-  'bg-blue-500/20 text-blue-700 dark:text-blue-300',
-  'bg-green-500/20 text-green-700 dark:text-green-300',
-  'bg-purple-500/20 text-purple-700 dark:text-purple-300',
-  'bg-orange-500/20 text-orange-700 dark:text-orange-300',
-  'bg-pink-500/20 text-pink-700 dark:text-pink-300',
+  "bg-blue-500/20 text-blue-700 dark:text-blue-300",
+  "bg-green-500/20 text-green-700 dark:text-green-300",
+  "bg-purple-500/20 text-purple-700 dark:text-purple-300",
+  "bg-orange-500/20 text-orange-700 dark:text-orange-300",
+  "bg-pink-500/20 text-pink-700 dark:text-pink-300",
 ];
 
 export const EntryCard = ({ entry, onEdit, onDelete }: EntryCardProps) => {
+  const { generateSummaryForEntry } = useJournal();
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+
   const getTagColor = (index: number) => {
     return tagColors[index % tagColors.length];
+  };
+
+  const handleGenerateSummary = async () => {
+    setIsGeneratingSummary(true);
+    try {
+      await generateSummaryForEntry(entry.id);
+      toast.success("AI summary generated successfully!");
+    } catch (error) {
+      toast.error("Failed to generate summary. Please try again.");
+    } finally {
+      setIsGeneratingSummary(false);
+    }
   };
 
   return (
@@ -41,7 +58,9 @@ export const EntryCard = ({ entry, onEdit, onDelete }: EntryCardProps) => {
         <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
           <div className="flex-1 w-full">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xl sm:text-2xl">{moodEmojis[entry.mood]}</span>
+              <span className="text-xl sm:text-2xl">
+                {moodEmojis[entry.mood]}
+              </span>
               <h3 className="text-lg sm:text-xl font-semibold text-foreground line-clamp-1">
                 {entry.title}
               </h3>
@@ -49,7 +68,7 @@ export const EntryCard = ({ entry, onEdit, onDelete }: EntryCardProps) => {
             <div className="flex items-center gap-4 text-xs sm:text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span>{format(new Date(entry.date), 'MMM dd, yyyy')}</span>
+                <span>{format(new Date(entry.date), "MMM dd, yyyy")}</span>
               </div>
             </div>
           </div>
@@ -76,9 +95,45 @@ export const EntryCard = ({ entry, onEdit, onDelete }: EntryCardProps) => {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-foreground/80 mb-3 line-clamp-3">
-          {entry.content}
-        </p>
+        <p className="text-foreground/80 mb-3 line-clamp-3">{entry.content}</p>
+
+        {/* AI Summary Section */}
+        {entry.aiSummary ? (
+          <div className="mb-3 p-3 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg border border-primary/20">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span className="text-xs font-semibold text-primary">
+                AI Summary
+              </span>
+            </div>
+            <p className="text-sm text-foreground/90 italic">
+              {entry.aiSummary}
+            </p>
+          </div>
+        ) : (
+          <div className="mb-3">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleGenerateSummary}
+              disabled={isGeneratingSummary}
+              className="w-full sm:w-auto text-xs border-primary/30 hover:bg-primary/10"
+            >
+              {isGeneratingSummary ? (
+                <>
+                  <Loader2 className="h-3 w-3 mr-2 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-3 w-3 mr-2" />
+                  Generate AI Summary
+                </>
+              )}
+            </Button>
+          </div>
+        )}
+
         {entry.tags.length > 0 && (
           <div className="flex items-center gap-2 flex-wrap">
             <Tag className="h-3 w-3 text-muted-foreground" />
